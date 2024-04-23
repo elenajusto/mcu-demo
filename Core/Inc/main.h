@@ -69,8 +69,6 @@ void Error_Handler(void);
 #define LED_GREEN_GPIO_Port GPIOA
 #define LED_2_Pin GPIO_PIN_14
 #define LED_2_GPIO_Port GPIOB
-#define BUTTON_OUT_Pin GPIO_PIN_8
-#define BUTTON_OUT_GPIO_Port GPIOA
 #define LED_1_Pin GPIO_PIN_7
 #define LED_1_GPIO_Port GPIOC
 #define TMS_Pin GPIO_PIN_13
@@ -81,8 +79,6 @@ void Error_Handler(void);
 #define BUTTON_INPUT_GPIO_Port GPIOB
 #define LED_3_Pin GPIO_PIN_4
 #define LED_3_GPIO_Port GPIOB
-#define POT_OUT_Pin GPIO_PIN_5
-#define POT_OUT_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
