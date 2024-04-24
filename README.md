@@ -1,4 +1,4 @@
 # MCU Demo Project
 
 # Wiring Schematic
-![MCU-Group-Demo-Wiring drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/f34e19ea-20cd-40b6-aff5-02096ed8c13e)
+![MCU-Group-Demo-Wiring drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/b4e464b4-1274-4ac7-bd0f-72d66735b0e4)
