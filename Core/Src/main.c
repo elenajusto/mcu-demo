@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include <string.h>
 #include <stdio.h>
+#include "../../ECUAL/I2C_LCD/I2C_LCD.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define MyI2C_LCD I2C_LCD_1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,6 +51,7 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+I2C_HandleTypeDef hi2c1;
 
 /* USER CODE END PV */
 
@@ -109,12 +111,24 @@ int main(void)
   HAL_ADC_Start_IT(&hadc1);
 
   i2cScanner();
+
+  I2C_LCD_Init(MyI2C_LCD);
+  I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
+  I2C_LCD_WriteString(MyI2C_LCD, "Meow");
+  I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
+  I2C_LCD_WriteString(MyI2C_LCD, "<3 Julian ");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  I2C_LCD_ShiftRight(MyI2C_LCD);    HAL_Delay(500);
+	  I2C_LCD_ShiftRight(MyI2C_LCD);    HAL_Delay(500);
+	  I2C_LCD_ShiftRight(MyI2C_LCD);    HAL_Delay(500);
+	  I2C_LCD_ShiftLeft(MyI2C_LCD);    HAL_Delay(500);
+	  I2C_LCD_ShiftLeft(MyI2C_LCD);    HAL_Delay(500);
+	  I2C_LCD_ShiftLeft(MyI2C_LCD);    HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
