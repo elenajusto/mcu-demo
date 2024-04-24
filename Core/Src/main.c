@@ -63,6 +63,9 @@ static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 void hardwareTestLED(void);
 void hardwareTestPot(void);
+void hardwareTestButton(void);
+void hardwareTestLCD(void);
+void i2cScanner(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -104,6 +107,8 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_ADC_Start_IT(&hadc1);
+
+  i2cScanner();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -115,6 +120,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  hardwareTestLED();
 	  hardwareTestPot();
+	  hardwareTestButton();
   }
   /* USER CODE END 3 */
 }
@@ -452,6 +458,54 @@ static void MX_GPIO_Init(void)
 		sprintf(msg, "potValue: %hu\r\n", potValue);
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
+	}
+
+	/* Test pushbutton is working */
+	void hardwareTestButton(void){
+		char msg[23];
+		if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin) == 0){
+			printf(msg, "BUTTON IS BEING PUSHED");
+			HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+		} else {
+			printf(msg, "NO BUTTON :(");
+			HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+	 	}
+	}
+
+	/* Test LCD is working */
+	//void hardwareTestLCD(void)
+
+	/* I2C Scanner Script */
+	/* Author:     Khaled Magdy */
+	/* Source: 	   www.DeepBlueMbedded.com */
+
+	void i2cScanner(void){
+		uint8_t Buffer[25] = {0};
+		uint8_t Space[] = " - ";
+		uint8_t StartMSG[] = "Starting I2C Scanning: \r\n";
+		uint8_t EndMSG[] = "Done! \r\n\r\n";
+
+		uint8_t i = 0, ret;
+
+		HAL_Delay(1000);
+
+		/*-[ I2C Bus Scanning ]-*/
+		HAL_UART_Transmit(&huart2, StartMSG, sizeof(StartMSG), 10000);
+		for(i=1; i<128; i++)
+		{
+			ret = HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i<<1), 3, 5);
+			if (ret != HAL_OK) /* No ACK Received At That Address */
+			{
+				HAL_UART_Transmit(&huart2, Space, sizeof(Space), 10000);
+			}
+			else if(ret == HAL_OK)
+			{
+				sprintf(Buffer, "0x%X", i);
+				HAL_UART_Transmit(&huart2, Buffer, sizeof(Buffer), 10000);
+			}
+		}
+		HAL_UART_Transmit(&huart2, EndMSG, sizeof(EndMSG), 10000);
+		/*--[ Scanning Done ]--*/
 	}
 
 /* USER CODE END 4 */
