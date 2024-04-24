@@ -14,6 +14,10 @@ To be added:
 
 Right now this is just a prototype :)
 
+# System Architecture - Draft 3
+![MCU-Group-Demo-Architecture drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/75996440-e57f-493d-be20-c32e69dafe40)
+
+
 # Wiring Schematic
 ![MCU-Group-Demo-Wiring drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/b4e464b4-1274-4ac7-bd0f-72d66735b0e4)
 
