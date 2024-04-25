@@ -33,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MyI2C_LCD I2C_LCD_1
+#define MyI2C_LCD I2C_LCD_1		// LCD Stuff
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,7 +51,6 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-I2C_HandleTypeDef hi2c1;
 
 /* USER CODE END PV */
 
@@ -110,31 +109,24 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_ADC_Start_IT(&hadc1);
 
+  // Scan I2C addresses on startup
   i2cScanner();
 
-  I2C_LCD_Init(MyI2C_LCD);
-  I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
-  I2C_LCD_WriteString(MyI2C_LCD, "Meow");
-  I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
-  I2C_LCD_WriteString(MyI2C_LCD, "<3 Julian ");
+  // I2C Display
+  hardwareTestLCD();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  I2C_LCD_ShiftRight(MyI2C_LCD);    HAL_Delay(500);
-	  I2C_LCD_ShiftRight(MyI2C_LCD);    HAL_Delay(500);
-	  I2C_LCD_ShiftRight(MyI2C_LCD);    HAL_Delay(500);
-	  I2C_LCD_ShiftLeft(MyI2C_LCD);    HAL_Delay(500);
-	  I2C_LCD_ShiftLeft(MyI2C_LCD);    HAL_Delay(500);
-	  I2C_LCD_ShiftLeft(MyI2C_LCD);    HAL_Delay(500);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 	  hardwareTestLED();
 	  hardwareTestPot();
-	  hardwareTestButton();
   }
   /* USER CODE END 3 */
 }
@@ -487,12 +479,20 @@ static void MX_GPIO_Init(void)
 	}
 
 	/* Test LCD is working */
+	void hardwareTestLCD(void){
+			I2C_LCD_Init(MyI2C_LCD);
+			I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
+			I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
+			I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
+			I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
+		}
+
+	/* Test LCD is working */
 	//void hardwareTestLCD(void)
 
 	/* I2C Scanner Script */
 	/* Author:     Khaled Magdy */
 	/* Source: 	   www.DeepBlueMbedded.com */
-
 	void i2cScanner(void){
 		uint8_t Buffer[25] = {0};
 		uint8_t Space[] = " - ";
