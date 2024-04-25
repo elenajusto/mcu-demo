@@ -71,7 +71,8 @@ void hardwareTestLCD(void);
 
 void i2cScanner(void);
 
-void motorSetup(void);
+void motorControl(int adcValue);
+int getAdcFromPot();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -113,7 +114,9 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  HAL_ADC_Start_IT(&hadc1);
+
+  // Enable PWM on TIM3
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
 
   // Scan I2C addresses on startup
   i2cScanner();
@@ -128,11 +131,16 @@ int main(void)
   while (1)
   {
 
+	// Start conversion after each ADC cycle
+	HAL_ADC_Start_IT(&hadc1);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  hardwareTestLED();
-	  hardwareTestPot();
+
+	// Hardware test functions
+	hardwareTestLED();
+	hardwareTestPot();
   }
   /* USER CODE END 3 */
 }
@@ -495,7 +503,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 	/* Test LEDs are working  */
-	void hardwareTestLED(void){
+	void hardwareTestLED(){
 
 		/* Lights ON */
 		HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_SET);
@@ -531,6 +539,15 @@ static void MX_GPIO_Init(void)
 
 	}
 
+	/* getADC from Pot */
+	int getAdcFromPot(){
+		/* Get pot value */
+		uint16_t potValue;
+		HAL_ADC_PollForConversion(&hadc1, 5);
+		potValue = HAL_ADC_GetValue(&hadc1);
+		return potValue;
+	}
+
 	/* Test pushbutton is working */
 	void hardwareTestButton(void){
 		char msg[23];
@@ -552,28 +569,10 @@ static void MX_GPIO_Init(void)
 		I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
 	}
 
-	/* Setup timer */
-	void timerSetup(void){
-		HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1); // Using HAL to Enable PWM
-	}
-
-	/* Motor setup */
-	void motorSetup(void){
-		// Determine the correct PSC and ARR values for an event frequency of 50 Hz
-
-		// Update TIM3 with the new PSC and ARR Values.
-
-		// Determine the minimum and maximum value of the duty cycle.
-
-		// Start the PWM signal using HAL Libraries in the main loop.
-
-		// Vary the duty cycle in a for-loop between 1ms to 2ms in the capture/compare
-		// register to sweep the servo.
-	}
-
 	/* Motor control */
-	void motorControl(adcValue){
+	void motorControl(int adcValue){
 		__HAL_TIM_SET_COMPARE (&htim3, TIM_CHANNEL_1, adcValue); // Interpolate ADC values to PWM range
+
 	}
 
 	/* I2C Scanner Script */
