@@ -47,6 +47,7 @@ ADC_HandleTypeDef hadc1;
 I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
 
@@ -61,12 +62,16 @@ static void MX_USART2_UART_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 void hardwareTestLED(void);
 void hardwareTestPot(void);
 void hardwareTestButton(void);
 void hardwareTestLCD(void);
+
 void i2cScanner(void);
+
+void motorSetup(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -106,6 +111,7 @@ int main(void)
   MX_ADC1_Init();
   MX_I2C1_Init();
   MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   HAL_ADC_Start_IT(&hadc1);
 
@@ -323,6 +329,65 @@ static void MX_TIM2_Init(void)
 }
 
 /**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 0;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 65535;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
+  HAL_TIM_MspPostInit(&htim3);
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -480,15 +545,31 @@ static void MX_GPIO_Init(void)
 
 	/* Test LCD is working */
 	void hardwareTestLCD(void){
-			I2C_LCD_Init(MyI2C_LCD);
-			I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
-			I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
-			I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
-			I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
-		}
+		I2C_LCD_Init(MyI2C_LCD);
+		I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
+		I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
+		I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
+		I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
+	}
 
-	/* Test LCD is working */
-	//void hardwareTestLCD(void)
+	/* Setup timer */
+	void timerSetup(void){
+
+	}
+
+	/* Motor setup */
+	void motorSetup(void){
+		// Determine the correct PSC and ARR values for an event frequency of 50 Hz
+
+		// Update TIM3 with the new PSC and ARR Values.
+
+		// Determine the minimum and maximum value of the duty cycle.
+
+		// Start the PWM signal using HAL Libraries in the main loop.
+
+		// Vary the duty cycle in a for-loop between 1ms to 2ms in the capture/compare
+		// register to sweep the servo.
+	}
 
 	/* I2C Scanner Script */
 	/* Author:     Khaled Magdy */
