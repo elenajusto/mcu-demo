@@ -70,6 +70,7 @@ void hardwareTestButton(void);
 void hardwareTestLCD(void);
 
 void i2cScanner(void);
+int myMap(int x, int in_min, int in_max, int out_min, int out_max);
 
 void motorControl(int adcValue);
 int getAdcFromPot();
@@ -115,7 +116,17 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
-  // Enable PWM on TIM3
+  // Enable the TIM2 peripheral
+  __HAL_RCC_TIM2_CLK_ENABLE();
+
+  // Enable the peripheral IRQ
+  HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(TIM2_IRQn);
+
+  // Start the timer
+  HAL_TIM_Base_Start_IT(&htim2);
+
+  // Enable PWM on TIM3 (for motor control)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
 
   // Scan I2C addresses on startup
@@ -124,6 +135,10 @@ int main(void)
   // I2C Display
   hardwareTestLCD();
 
+  // Variables
+  int servoAngle;
+  int adcValue;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,16 +146,22 @@ int main(void)
   while (1)
   {
 
-	// Start conversion after each ADC cycle
-	HAL_ADC_Start_IT(&hadc1);
+	// Get potentiometer value
+	HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+	hardwareTestPot();
+
+	// Motor control
+	adcValue = getAdcFromPot();
+	servoAngle = myMap(adcValue, 60, 4095, 0, 180);
+	motorControl(servoAngle);
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-	// Hardware test functions
-	hardwareTestLED();
-	hardwareTestPot();
+	// Hardware test LED
+	//hardwareTestLED();
+
   }
   /* USER CODE END 3 */
 }
@@ -310,9 +331,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 319;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -571,7 +592,7 @@ static void MX_GPIO_Init(void)
 
 	/* Motor control */
 	void motorControl(int adcValue){
-		__HAL_TIM_SET_COMPARE (&htim3, TIM_CHANNEL_1, adcValue); // Interpolate ADC values to PWM range
+		__HAL_TIM_SET_COMPARE (&htim3, TIM_CHANNEL_1, adcValue); // Interpolate pot values to PWM range
 
 	}
 
@@ -607,6 +628,17 @@ static void MX_GPIO_Init(void)
 		/*--[ Scanning Done ]--*/
 	}
 
+	/* Mapping function */
+	 int myMap(int x, int in_min, int in_max, int out_min, int out_max){
+		 return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	 }
+
+	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+		 // This callback is automatically called by the HAL on the UEV event
+		 if(htim->Instance == TIM2){
+			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+		 }
+	 }
 /* USER CODE END 4 */
 
 /**
