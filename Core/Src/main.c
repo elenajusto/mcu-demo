@@ -169,14 +169,17 @@ int main(void)
   while (1)
   {
 
+	// Testing UART receiving
+    HAL_UART_Receive_IT(&huart2, 1, 1);
+
 	// Get potentiometer value
-	HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
-	hardwareTestPot();
+	//HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+	//hardwareTestPot();
 
 	// Motor control
-	adcValue = getAdcFromPot();
-	servoAngle = myMap(adcValue, 60, 4095, 0, 180);
-	motorControl(servoAngle);
+	//adcValue = getAdcFromPot();
+	//servoAngle = myMap(adcValue, 60, 4095, 0, 180);
+	//motorControl(servoAngle);
 
     /* USER CODE END WHILE */
 
@@ -732,6 +735,8 @@ static void MX_GPIO_Init(void)
 		 return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	 }
 
+	 /* Non blocking control of LEDs */
+	 // Frequency currently determined by each timer's PSC and ARR value
 	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		 // This callback is automatically called by the HAL on the UEV event
 		 if(htim->Instance == TIM2){
@@ -742,6 +747,25 @@ static void MX_GPIO_Init(void)
 			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
 		 }
 	 }
+
+
+	 /* UART Receive Function */
+	 // Triggers interrupt when UART receives bytes
+	 void uartReceive(void){
+		 HAL_UART_Receive_IT(&huart2, 20, 20);
+	 }
+
+	 /* UART Interrupt Handler */
+	 // Handles receiving of bytes
+	 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+		 UNUSED(huart);
+
+		 /* Test message to confirm receiving works */
+		 char msg[20];
+		 sprintf(msg, "Message received\n\r");
+		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+	 }
+
 /* USER CODE END 4 */
 
 /**
