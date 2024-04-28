@@ -4575,11 +4575,11 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .text.MX_I2C1_Init
                 0x00000000080008bc       0x80 ./Core/Src/main.o
  .text.MX_TIM2_Init
-                0x000000000800093c       0xac ./Core/Src/main.o
+                0x000000000800093c       0xa8 ./Core/Src/main.o
  .text.MX_TIM3_Init
-                0x00000000080009e8      0x104 ./Core/Src/main.o
+                0x00000000080009e4      0x104 ./Core/Src/main.o
  .text.MX_TIM6_Init
-                0x0000000008000aec       0x78 ./Core/Src/main.o
+                0x0000000008000ae8       0x7c ./Core/Src/main.o
  .text.MX_TIM7_Init
                 0x0000000008000b64       0x7c ./Core/Src/main.o
  .text.MX_USART2_UART_Init
