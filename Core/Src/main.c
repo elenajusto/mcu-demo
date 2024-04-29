@@ -54,7 +54,9 @@ TIM_HandleTypeDef htim7;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+char msg[23];
+char msg2[60];
+uint16_t potValue;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -78,6 +80,12 @@ int myMap(int x, int in_min, int in_max, int out_min, int out_max);
 
 void motorControl(int adcValue);
 int getAdcFromPot();
+
+void stateMachineController(int state);
+int stateHandlerA(void);
+int stateHandlerB(void);
+void stateHandlerC(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -153,7 +161,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
 
   // Scan I2C addresses on startup
-  i2cScanner();
+  //i2cScanner();
 
   // I2C Display
   hardwareTestLCD();
@@ -161,6 +169,7 @@ int main(void)
   // Variables
   int servoAngle;
   int adcValue;
+  int stateTracker = 1;
 
   /* USER CODE END 2 */
 
@@ -168,18 +177,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // State Machine Control
+	  //stateMachineController(stateTracker);
 
-	// Testing UART receiving
-    //HAL_UART_Receive_IT(&huart2, 1, 1);
+	  // Testing UART receiving
+	  HAL_UART_Receive_IT(&huart2, 1, 1);
 
-	// Get potentiometer value
-	HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
-	hardwareTestPot();
+	  // Get potentiometer value
+	  HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+	  hardwareTestPot();
 
-	// Motor control
-	adcValue = getAdcFromPot();
-	servoAngle = myMap(adcValue, 60, 4095, 0, 180);
-	motorControl(servoAngle);
+	  // Motor control
+	  adcValue = getAdcFromPot();
+	  servoAngle = myMap(adcValue, 60, 4095, 0, 180);
+	  motorControl(servoAngle);
 
     /* USER CODE END WHILE */
 
@@ -584,13 +595,16 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, BUTTON_2_Pin|LED_1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(BUTTON_2_GPIO_Port, BUTTON_2_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED_2_Pin|LED_3_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : BUTTON_2_Pin LED_1_Pin */
   GPIO_InitStruct.Pin = BUTTON_2_Pin|LED_1_Pin;
@@ -795,34 +809,63 @@ static void MX_GPIO_Init(void)
 	 /* State Handler A */
 	 // Description:
 	 //  Input:
-	 // Output:
-	 void stateHandlerA(void){
+	 // Output:	State variable
+	 int stateHandlerA(void){
 
 		 // Push Button 2 Control
+		 if (HAL_GPIO_ReadPin(BUTTON_2_GPIO_Port, BUTTON_2_Pin) == 0){
+			 printf(msg, "Button 2 pushed. Going to State B.\n\r");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+			 // Go to State B when Button 2 is pressed
+			 return(2);
+		 }
 
 		 // Push Button 1 Control
+		 if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin) == 0){
+			 printf(msg, "Button 1 pushed. Going to State C.\n\r");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+			 // Go to State C when Button 1 is pressed
+			 return(3);
+		 }
 
 		 // LCD Control
+		 I2C_LCD_Init(MyI2C_LCD);
+		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
+		 I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
+		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
+		 I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
 
 		 // UART Control
+		 HAL_ADC_PollForConversion(&hadc1, 5);
+		 potValue = HAL_ADC_GetValue(&hadc1);
+		 sprintf(msg2, "Autumn 2024 MX1.  SID:24429298.  ADC Reading: %hu\r\n", potValue);
+		 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
+
+		 // Get user input
+		 HAL_UART_Receive_IT(&huart2, 1, 1);
 
 		 // LED 4 Control
 
-		 // Potentiometer Control
+		 // LED 1 Control - Stay off
+		 //HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_RESET);
 
-		 // LED 1 Control
+		 // LED 2 Control - Stay off
+		 //HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, GPIO_PIN_RESET);
 
-		 // LED 2 Control
+		 // LED 3 Control - Stay off
+		 //HAL_GPIO_WritePin(LED_3_GPIO_Port, LED_3_Pin, GPIO_PIN_RESET);
 
-		 // LED 3 Control
-
+		 // No button pushes - Stay in State A
+		 return(1);
 	 }
 
 	 /* State Handler B */
 	 // Description:
 	 //  Input:
 	 // Output:
-	 void stateHandlerB(void){
+	 int stateHandlerB(void){
 
 		 // Push Button 2 Control
 
@@ -842,6 +885,8 @@ static void MX_GPIO_Init(void)
 
 		 // LED 3 Control
 
+		 // No button pushes - Stay in State B
+		 return(2);
 	 }
 
 	 /* State Handler C */
@@ -867,6 +912,7 @@ static void MX_GPIO_Init(void)
 		 // LED 2 Control
 
 		 // LED 3 Control
+
 	 }
 
 /* USER CODE END 4 */
