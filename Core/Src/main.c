@@ -170,16 +170,16 @@ int main(void)
   {
 
 	// Testing UART receiving
-    HAL_UART_Receive_IT(&huart2, 1, 1);
+    //HAL_UART_Receive_IT(&huart2, 1, 1);
 
 	// Get potentiometer value
-	//HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
-	//hardwareTestPot();
+	HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+	hardwareTestPot();
 
 	// Motor control
-	//adcValue = getAdcFromPot();
-	//servoAngle = myMap(adcValue, 60, 4095, 0, 180);
-	//motorControl(servoAngle);
+	adcValue = getAdcFromPot();
+	servoAngle = myMap(adcValue, 60, 4095, 0, 180);
+	motorControl(servoAngle);
 
     /* USER CODE END WHILE */
 
@@ -764,6 +764,109 @@ static void MX_GPIO_Init(void)
 		 char msg[20];
 		 sprintf(msg, "Message received\n\r");
 		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+	 }
+
+	 /* State Machine Controller */
+	 // Description: Determines which state the program will execute.
+	 //  Input:		 Integer corresponding to state (1 = A, 2 = B, 3 = C)
+	 // Output:		 None
+	 void stateMachineController(int state){
+		 int stateTracker = state;
+
+		 switch(stateTracker){
+
+		 	 // State A
+			 case 1:
+				 stateHandlerA();
+				 break;
+
+			 // State B
+			 case 2:
+				 stateHandlerB();
+				 break;
+
+			// State C
+			 case 3:
+				 stateHandlerC();
+				 break;
+		 }
+	 }
+
+	 /* State Handler A */
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void stateHandlerA(void){
+
+		 // Push Button 2 Control
+
+		 // Push Button 1 Control
+
+		 // LCD Control
+
+		 // UART Control
+
+		 // LED 4 Control
+
+		 // Potentiometer Control
+
+		 // LED 1 Control
+
+		 // LED 2 Control
+
+		 // LED 3 Control
+
+	 }
+
+	 /* State Handler B */
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void stateHandlerB(void){
+
+		 // Push Button 2 Control
+
+		 // Push Button 1 Control
+
+		 // LCD Control
+
+		 // UART Control
+
+		 // LED 4 Control
+
+		 // Potentiometer Control
+
+		 // LED 1 Control
+
+		 // LED 2 Control
+
+		 // LED 3 Control
+
+	 }
+
+	 /* State Handler C */
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void stateHandlerC(void){
+
+		 // Push Button 2 Control
+
+		 // Push Button 1 Control
+
+		 // LCD Control
+
+		 // UART Control
+
+		 // LED 4 Control
+
+		 // Potentiometer Control
+
+		 // LED 1 Control
+
+		 // LED 2 Control
+
+		 // LED 3 Control
 	 }
 
 /* USER CODE END 4 */
