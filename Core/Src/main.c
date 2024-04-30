@@ -54,9 +54,26 @@ TIM_HandleTypeDef htim7;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-char msg[23];
-char msg2[60];
+
+// Global Variables
+char msg[23];				// UART Message Buffer 1
+char msg2[60];				// UART Message Buffer 2
 uint16_t potValue;
+
+int stateTracker;			// 1 = A, 2 = B, 3 = C
+
+// Tracks states (1 = ON, 2 = OFF)
+int flagButtonOne;			// External button
+int flagButtonTwo;			// On-board button
+int flagLCD;
+int flagUART;				// 3 flag states (1 = ON, 2 = OFF, 3 = GPIO)
+int flagPot;
+int flagLED1;				// Blue	LED
+int flagLED2;				// Green LED
+int flagLED3;				// Red LED
+int flagLED4;				// On-board LED (Green)
+int flagServo;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,6 +87,8 @@ static void MX_TIM3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
+
+// Test functions
 void hardwareTestLED(void);
 void hardwareTestPot(void);
 void hardwareTestButton(void);
@@ -81,10 +100,20 @@ int myMap(int x, int in_min, int in_max, int out_min, int out_max);
 void motorControl(int adcValue);
 int getAdcFromPot();
 
+// State Functions
 void stateMachineController(int state);
 int stateHandlerA(void);
 int stateHandlerB(void);
 void stateHandlerC(void);
+
+// Hardware Control Functions
+void controlButton1(void);
+void controlButton2(void);
+void controlLCD(void);
+void controlUART(void);
+void controlPOT(void);
+void controlLED4(void);
+void controlServo(void);
 
 /* USER CODE END PFP */
 
@@ -749,20 +778,6 @@ static void MX_GPIO_Init(void)
 		 return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 	 }
 
-	 /* Non blocking control of LEDs */
-	 // Frequency currently determined by each timer's PSC and ARR value
-	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-		 // This callback is automatically called by the HAL on the UEV event
-		 if(htim->Instance == TIM2){
-			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
-		 } else if(htim->Instance == TIM6){
-			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
-		 } else if(htim->Instance == TIM7){
-			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
-		 }
-	 }
-
-
 	 /* UART Receive Function */
 	 // Triggers interrupt when UART receives bytes
 	 void uartReceive(void){
@@ -811,51 +826,23 @@ static void MX_GPIO_Init(void)
 	 //  Input:
 	 // Output:	State variable
 	 int stateHandlerA(void){
-
 		 // Push Button 2 Control
-		 if (HAL_GPIO_ReadPin(BUTTON_2_GPIO_Port, BUTTON_2_Pin) == 0){
-			 printf(msg, "Button 2 pushed. Going to State B.\n\r");
-			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-			 // Go to State B when Button 2 is pressed
-			 return(2);
-		 }
 
 		 // Push Button 1 Control
-		 if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin) == 0){
-			 printf(msg, "Button 1 pushed. Going to State C.\n\r");
-			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-			 // Go to State C when Button 1 is pressed
-			 return(3);
-		 }
 
 		 // LCD Control
-		 I2C_LCD_Init(MyI2C_LCD);
-		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
-		 I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
-		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
-		 I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
 
 		 // UART Control
-		 HAL_ADC_PollForConversion(&hadc1, 5);
-		 potValue = HAL_ADC_GetValue(&hadc1);
-		 sprintf(msg2, "Autumn 2024 MX1.  SID:24429298.  ADC Reading: %hu\r\n", potValue);
-		 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
-
-		 // Get user input
-		 HAL_UART_Receive_IT(&huart2, 1, 1);
 
 		 // LED 4 Control
 
-		 // LED 1 Control - Stay off
-		 //HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_RESET);
+		 // Potentiometer Control
 
-		 // LED 2 Control - Stay off
-		 //HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, GPIO_PIN_RESET);
+		 // LED 1 Control
 
-		 // LED 3 Control - Stay off
-		 //HAL_GPIO_WritePin(LED_3_GPIO_Port, LED_3_Pin, GPIO_PIN_RESET);
+		 // LED 2 Control
+
+		 // LED 3 Control
 
 		 // No button pushes - Stay in State A
 		 return(1);
@@ -912,6 +899,82 @@ static void MX_GPIO_Init(void)
 		 // LED 2 Control
 
 		 // LED 3 Control
+
+	 }
+
+
+	 // Hardware Control Functions
+
+
+	 /* Controller Function for Button 1*/
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void controlButton1(void){
+
+	 }
+
+	 /* Controller Function for Button 2*/
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void controlButton2(void){
+
+	 }
+
+	 /* Controller Function for LCD*/
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void controlLCD(void){
+
+	 }
+
+	 /* Controller Function for UART*/
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void controlUART(void){
+
+	 }
+
+	 /* Controller Function for Potentiometer*/
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void controlPOT(void){
+
+	 }
+
+	 /* Controller Function for LED1, LED2 and LED3*/
+	 // Description: Frequency currently determined by each timer's PSC
+	 // 			 and ARR value.
+	 //  Input:
+	 // Output:
+	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+		 // This callback is automatically called by the HAL on the UEV event
+		 if(htim->Instance == TIM2){
+			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+		 } else if(htim->Instance == TIM6){
+			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
+		 } else if(htim->Instance == TIM7){
+			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
+		 }
+	 }
+
+	 /* Controller Function for LED4*/
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void controlLED4(void){
+
+	 }
+
+	 /* Controller Function for Servo*/
+	 // Description:
+	 //  Input:
+	 // Output:
+	 void controlServo(void){
 
 	 }
 

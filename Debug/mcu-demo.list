@@ -29,23 +29,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  12 .comment      00000043  00000000  00000000  00020084  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00017b22  00000000  00000000  000200c7  2**0
+ 13 .debug_info   00017c51  00000000  00000000  000200c7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002fc3  00000000  00000000  00037be9  2**0
+ 14 .debug_abbrev 00002fac  00000000  00000000  00037d18  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00001518  00000000  00000000  0003abb0  2**3
+ 15 .debug_aranges 00001550  00000000  00000000  0003acc8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00001090  00000000  00000000  0003c0c8  2**0
+ 16 .debug_rnglists 000010ba  00000000  00000000  0003c218  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  0001b179  00000000  00000000  0003d158  2**0
+ 17 .debug_macro  0001b179  00000000  00000000  0003d2d2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00019e72  00000000  00000000  000582d1  2**0
+ 18 .debug_line   00019f05  00000000  00000000  0005844b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000aee7e  00000000  00000000  00072143  2**0
+ 19 .debug_str    000aef3a  00000000  00000000  00072350  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_frame  0000524c  00000000  00000000  00120fc4  2**2
+ 20 .debug_frame  00005310  00000000  00000000  0012128c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000064  00000000  00000000  00126210  2**0
+ 21 .debug_line_str 00000064  00000000  00000000  0012659c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2321,113 +2321,115 @@ static void MX_GPIO_Init(void)
  8000f00:	bd80      	pop	{r7, pc}
 	...
 
-08000f04 <HAL_TIM_PeriodElapsedCallback>:
-
-	 /* Non blocking control of LEDs */
-	 // Frequency currently determined by each timer's PSC and ARR value
-	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
- 8000f04:	b580      	push	{r7, lr}
- 8000f06:	b082      	sub	sp, #8
- 8000f08:	af00      	add	r7, sp, #0
- 8000f0a:	6078      	str	r0, [r7, #4]
-		 // This callback is automatically called by the HAL on the UEV event
-		 if(htim->Instance == TIM2){
- 8000f0c:	687b      	ldr	r3, [r7, #4]
- 8000f0e:	681a      	ldr	r2, [r3, #0]
- 8000f10:	2380      	movs	r3, #128	; 0x80
- 8000f12:	05db      	lsls	r3, r3, #23
- 8000f14:	429a      	cmp	r2, r3
- 8000f16:	d105      	bne.n	8000f24 <HAL_TIM_PeriodElapsedCallback+0x20>
-			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
- 8000f18:	4b10      	ldr	r3, [pc, #64]	; (8000f5c <HAL_TIM_PeriodElapsedCallback+0x58>)
- 8000f1a:	2180      	movs	r1, #128	; 0x80
- 8000f1c:	0018      	movs	r0, r3
- 8000f1e:	f001 fcf6 	bl	800290e <HAL_GPIO_TogglePin>
-		 } else if(htim->Instance == TIM6){
-			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
-		 } else if(htim->Instance == TIM7){
-			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
-		 }
-	 }
- 8000f22:	e016      	b.n	8000f52 <HAL_TIM_PeriodElapsedCallback+0x4e>
-		 } else if(htim->Instance == TIM6){
- 8000f24:	687b      	ldr	r3, [r7, #4]
- 8000f26:	681b      	ldr	r3, [r3, #0]
- 8000f28:	4a0d      	ldr	r2, [pc, #52]	; (8000f60 <HAL_TIM_PeriodElapsedCallback+0x5c>)
- 8000f2a:	4293      	cmp	r3, r2
- 8000f2c:	d107      	bne.n	8000f3e <HAL_TIM_PeriodElapsedCallback+0x3a>
-			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
- 8000f2e:	2380      	movs	r3, #128	; 0x80
- 8000f30:	01db      	lsls	r3, r3, #7
- 8000f32:	4a0c      	ldr	r2, [pc, #48]	; (8000f64 <HAL_TIM_PeriodElapsedCallback+0x60>)
- 8000f34:	0019      	movs	r1, r3
- 8000f36:	0010      	movs	r0, r2
- 8000f38:	f001 fce9 	bl	800290e <HAL_GPIO_TogglePin>
-	 }
- 8000f3c:	e009      	b.n	8000f52 <HAL_TIM_PeriodElapsedCallback+0x4e>
-		 } else if(htim->Instance == TIM7){
- 8000f3e:	687b      	ldr	r3, [r7, #4]
- 8000f40:	681b      	ldr	r3, [r3, #0]
- 8000f42:	4a09      	ldr	r2, [pc, #36]	; (8000f68 <HAL_TIM_PeriodElapsedCallback+0x64>)
- 8000f44:	4293      	cmp	r3, r2
- 8000f46:	d104      	bne.n	8000f52 <HAL_TIM_PeriodElapsedCallback+0x4e>
-			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
- 8000f48:	4b06      	ldr	r3, [pc, #24]	; (8000f64 <HAL_TIM_PeriodElapsedCallback+0x60>)
- 8000f4a:	2110      	movs	r1, #16
- 8000f4c:	0018      	movs	r0, r3
- 8000f4e:	f001 fcde 	bl	800290e <HAL_GPIO_TogglePin>
-	 }
- 8000f52:	46c0      	nop			; (mov r8, r8)
- 8000f54:	46bd      	mov	sp, r7
- 8000f56:	b002      	add	sp, #8
- 8000f58:	bd80      	pop	{r7, pc}
- 8000f5a:	46c0      	nop			; (mov r8, r8)
- 8000f5c:	50000800 	.word	0x50000800
- 8000f60:	40001000 	.word	0x40001000
- 8000f64:	50000400 	.word	0x50000400
- 8000f68:	40001400 	.word	0x40001400
-
-08000f6c <HAL_UART_RxCpltCallback>:
+08000f04 <HAL_UART_RxCpltCallback>:
 		 HAL_UART_Receive_IT(&huart2, 20, 20);
 	 }
 
 	 /* UART Interrupt Handler */
 	 // Handles receiving of bytes
 	 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
- 8000f6c:	b590      	push	{r4, r7, lr}
- 8000f6e:	b089      	sub	sp, #36	; 0x24
- 8000f70:	af00      	add	r7, sp, #0
- 8000f72:	6078      	str	r0, [r7, #4]
+ 8000f04:	b590      	push	{r4, r7, lr}
+ 8000f06:	b089      	sub	sp, #36	; 0x24
+ 8000f08:	af00      	add	r7, sp, #0
+ 8000f0a:	6078      	str	r0, [r7, #4]
 		 UNUSED(huart);
 
 		 /* Test message to confirm receiving works */
 		 char msg[20];
 		 sprintf(msg, "Message received\n\r");
- 8000f74:	4a0b      	ldr	r2, [pc, #44]	; (8000fa4 <HAL_UART_RxCpltCallback+0x38>)
- 8000f76:	240c      	movs	r4, #12
- 8000f78:	193b      	adds	r3, r7, r4
- 8000f7a:	0011      	movs	r1, r2
- 8000f7c:	0018      	movs	r0, r3
- 8000f7e:	f006 fdb7 	bl	8007af0 <siprintf>
+ 8000f0c:	4a0b      	ldr	r2, [pc, #44]	; (8000f3c <HAL_UART_RxCpltCallback+0x38>)
+ 8000f0e:	240c      	movs	r4, #12
+ 8000f10:	193b      	adds	r3, r7, r4
+ 8000f12:	0011      	movs	r1, r2
+ 8000f14:	0018      	movs	r0, r3
+ 8000f16:	f006 fdeb 	bl	8007af0 <siprintf>
 		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
- 8000f82:	193b      	adds	r3, r7, r4
- 8000f84:	0018      	movs	r0, r3
- 8000f86:	f7ff f8bd 	bl	8000104 <strlen>
- 8000f8a:	0003      	movs	r3, r0
- 8000f8c:	b29a      	uxth	r2, r3
- 8000f8e:	2301      	movs	r3, #1
- 8000f90:	425b      	negs	r3, r3
- 8000f92:	1939      	adds	r1, r7, r4
- 8000f94:	4804      	ldr	r0, [pc, #16]	; (8000fa8 <HAL_UART_RxCpltCallback+0x3c>)
- 8000f96:	f004 fa2d 	bl	80053f4 <HAL_UART_Transmit>
+ 8000f1a:	193b      	adds	r3, r7, r4
+ 8000f1c:	0018      	movs	r0, r3
+ 8000f1e:	f7ff f8f1 	bl	8000104 <strlen>
+ 8000f22:	0003      	movs	r3, r0
+ 8000f24:	b29a      	uxth	r2, r3
+ 8000f26:	2301      	movs	r3, #1
+ 8000f28:	425b      	negs	r3, r3
+ 8000f2a:	1939      	adds	r1, r7, r4
+ 8000f2c:	4804      	ldr	r0, [pc, #16]	; (8000f40 <HAL_UART_RxCpltCallback+0x3c>)
+ 8000f2e:	f004 fa61 	bl	80053f4 <HAL_UART_Transmit>
 	 }
+ 8000f32:	46c0      	nop			; (mov r8, r8)
+ 8000f34:	46bd      	mov	sp, r7
+ 8000f36:	b009      	add	sp, #36	; 0x24
+ 8000f38:	bd90      	pop	{r4, r7, pc}
+ 8000f3a:	46c0      	nop			; (mov r8, r8)
+ 8000f3c:	080084dc 	.word	0x080084dc
+ 8000f40:	20000260 	.word	0x20000260
+
+08000f44 <HAL_TIM_PeriodElapsedCallback>:
+	 /* Controller Function for LED1, LED2 and LED3*/
+	 // Description: Frequency currently determined by each timer's PSC
+	 // 			 and ARR value.
+	 //  Input:
+	 // Output:
+	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+ 8000f44:	b580      	push	{r7, lr}
+ 8000f46:	b082      	sub	sp, #8
+ 8000f48:	af00      	add	r7, sp, #0
+ 8000f4a:	6078      	str	r0, [r7, #4]
+		 // This callback is automatically called by the HAL on the UEV event
+		 if(htim->Instance == TIM2){
+ 8000f4c:	687b      	ldr	r3, [r7, #4]
+ 8000f4e:	681a      	ldr	r2, [r3, #0]
+ 8000f50:	2380      	movs	r3, #128	; 0x80
+ 8000f52:	05db      	lsls	r3, r3, #23
+ 8000f54:	429a      	cmp	r2, r3
+ 8000f56:	d105      	bne.n	8000f64 <HAL_TIM_PeriodElapsedCallback+0x20>
+			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+ 8000f58:	4b10      	ldr	r3, [pc, #64]	; (8000f9c <HAL_TIM_PeriodElapsedCallback+0x58>)
+ 8000f5a:	2180      	movs	r1, #128	; 0x80
+ 8000f5c:	0018      	movs	r0, r3
+ 8000f5e:	f001 fcd6 	bl	800290e <HAL_GPIO_TogglePin>
+		 } else if(htim->Instance == TIM6){
+			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
+		 } else if(htim->Instance == TIM7){
+			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
+		 }
+	 }
+ 8000f62:	e016      	b.n	8000f92 <HAL_TIM_PeriodElapsedCallback+0x4e>
+		 } else if(htim->Instance == TIM6){
+ 8000f64:	687b      	ldr	r3, [r7, #4]
+ 8000f66:	681b      	ldr	r3, [r3, #0]
+ 8000f68:	4a0d      	ldr	r2, [pc, #52]	; (8000fa0 <HAL_TIM_PeriodElapsedCallback+0x5c>)
+ 8000f6a:	4293      	cmp	r3, r2
+ 8000f6c:	d107      	bne.n	8000f7e <HAL_TIM_PeriodElapsedCallback+0x3a>
+			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
+ 8000f6e:	2380      	movs	r3, #128	; 0x80
+ 8000f70:	01db      	lsls	r3, r3, #7
+ 8000f72:	4a0c      	ldr	r2, [pc, #48]	; (8000fa4 <HAL_TIM_PeriodElapsedCallback+0x60>)
+ 8000f74:	0019      	movs	r1, r3
+ 8000f76:	0010      	movs	r0, r2
+ 8000f78:	f001 fcc9 	bl	800290e <HAL_GPIO_TogglePin>
+	 }
+ 8000f7c:	e009      	b.n	8000f92 <HAL_TIM_PeriodElapsedCallback+0x4e>
+		 } else if(htim->Instance == TIM7){
+ 8000f7e:	687b      	ldr	r3, [r7, #4]
+ 8000f80:	681b      	ldr	r3, [r3, #0]
+ 8000f82:	4a09      	ldr	r2, [pc, #36]	; (8000fa8 <HAL_TIM_PeriodElapsedCallback+0x64>)
+ 8000f84:	4293      	cmp	r3, r2
+ 8000f86:	d104      	bne.n	8000f92 <HAL_TIM_PeriodElapsedCallback+0x4e>
+			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
+ 8000f88:	4b06      	ldr	r3, [pc, #24]	; (8000fa4 <HAL_TIM_PeriodElapsedCallback+0x60>)
+ 8000f8a:	2110      	movs	r1, #16
+ 8000f8c:	0018      	movs	r0, r3
+ 8000f8e:	f001 fcbe 	bl	800290e <HAL_GPIO_TogglePin>
+	 }
+ 8000f92:	46c0      	nop			; (mov r8, r8)
+ 8000f94:	46bd      	mov	sp, r7
+ 8000f96:	b002      	add	sp, #8
+ 8000f98:	bd80      	pop	{r7, pc}
  8000f9a:	46c0      	nop			; (mov r8, r8)
- 8000f9c:	46bd      	mov	sp, r7
- 8000f9e:	b009      	add	sp, #36	; 0x24
- 8000fa0:	bd90      	pop	{r4, r7, pc}
- 8000fa2:	46c0      	nop			; (mov r8, r8)
- 8000fa4:	080084dc 	.word	0x080084dc
- 8000fa8:	20000260 	.word	0x20000260
+ 8000f9c:	50000800 	.word	0x50000800
+ 8000fa0:	40001000 	.word	0x40001000
+ 8000fa4:	50000400 	.word	0x50000400
+ 8000fa8:	40001400 	.word	0x40001400
 
 08000fac <Error_Handler>:
 /**
@@ -12721,7 +12723,7 @@ void HAL_TIM_IRQHandler(TIM_HandleTypeDef *htim)
       HAL_TIM_PeriodElapsedCallback(htim);
  8004582:	687b      	ldr	r3, [r7, #4]
  8004584:	0018      	movs	r0, r3
- 8004586:	f7fc fcbd 	bl	8000f04 <HAL_TIM_PeriodElapsedCallback>
+ 8004586:	f7fc fcdd 	bl	8000f44 <HAL_TIM_PeriodElapsedCallback>
 #endif /* USE_HAL_TIM_REGISTER_CALLBACKS */
     }
   }
@@ -19542,7 +19544,7 @@ static void UART_RxISR_8BIT(UART_HandleTypeDef *huart)
         HAL_UART_RxCpltCallback(huart);
  8006ac6:	687b      	ldr	r3, [r7, #4]
  8006ac8:	0018      	movs	r0, r3
- 8006aca:	f7fa fa4f 	bl	8000f6c <HAL_UART_RxCpltCallback>
+ 8006aca:	f7fa fa1b 	bl	8000f04 <HAL_UART_RxCpltCallback>
 }
  8006ace:	e007      	b.n	8006ae0 <UART_RxISR_8BIT+0x1b0>
     __HAL_UART_SEND_REQ(huart, UART_RXDATA_FLUSH_REQUEST);
@@ -19853,7 +19855,7 @@ static void UART_RxISR_16BIT(UART_HandleTypeDef *huart)
         HAL_UART_RxCpltCallback(huart);
  8006c8a:	687b      	ldr	r3, [r7, #4]
  8006c8c:	0018      	movs	r0, r3
- 8006c8e:	f7fa f96d 	bl	8000f6c <HAL_UART_RxCpltCallback>
+ 8006c8e:	f7fa f939 	bl	8000f04 <HAL_UART_RxCpltCallback>
 }
  8006c92:	e007      	b.n	8006ca4 <UART_RxISR_16BIT+0x1b0>
     __HAL_UART_SEND_REQ(huart, UART_RXDATA_FLUSH_REQUEST);
@@ -20312,7 +20314,7 @@ static void UART_RxISR_8BIT_FIFOEN(UART_HandleTypeDef *huart)
           HAL_UART_RxCpltCallback(huart);
  8006f1a:	687b      	ldr	r3, [r7, #4]
  8006f1c:	0018      	movs	r0, r3
- 8006f1e:	f7fa f825 	bl	8000f6c <HAL_UART_RxCpltCallback>
+ 8006f1e:	f7f9 fff1 	bl	8000f04 <HAL_UART_RxCpltCallback>
     while ((nb_rx_data > 0U) && ((isrflags & USART_ISR_RXNE_RXFNE) != 0U))
  8006f22:	236e      	movs	r3, #110	; 0x6e
  8006f24:	18fb      	adds	r3, r7, r3
@@ -20896,7 +20898,7 @@ static void UART_RxISR_16BIT_FIFOEN(UART_HandleTypeDef *huart)
           HAL_UART_RxCpltCallback(huart);
  800726e:	687b      	ldr	r3, [r7, #4]
  8007270:	0018      	movs	r0, r3
- 8007272:	f7f9 fe7b 	bl	8000f6c <HAL_UART_RxCpltCallback>
+ 8007272:	f7f9 fe47 	bl	8000f04 <HAL_UART_RxCpltCallback>
     while ((nb_rx_data > 0U) && ((isrflags & USART_ISR_RXNE_RXFNE) != 0U))
  8007276:	2376      	movs	r3, #118	; 0x76
  8007278:	18fb      	adds	r3, r7, r3
