@@ -218,36 +218,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  // State Machine Control
-	  //stateMachineController(stateTracker);
-
-	  // Testing UART receiving
-	  //HAL_UART_Receive_IT(&huart2, 1, 1);
-
 	  // Get potentiometer value
-	  HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+	  HAL_ADC_Start_IT(&hadc1);
 	  hardwareTestPot();
 
-	  // Motor control
-	  //adcValue = getAdcFromPot();
-	  //servoAngle = myMap(adcValue, 60, 4095, 0, 180);
-	  //motorControl(servoAngle);
-
-	 // Debug message
-	 //sprintf(msg, "Current State: %hu\n\r", stateTracker);
-	 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-	 // State decider
+	 // State Machine
 	 stateMachineDecider();
 	 stateMachineController(stateTracker);
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-	// Hardware test LED
-	//hardwareTestLED();
-
   }
   /* USER CODE END 3 */
 }
