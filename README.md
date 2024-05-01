@@ -1,27 +1,18 @@
 # MCU Demo Project
 
-What works:
-- One way UART
-- LED control
-- ADC readings from potentiometer
-- LCD control
+<h2>State Machine - Current Progress</h2>
+![State Machine Progress](https://github.com/elenajusto/mcu-demo/assets/56148816/7134aaa8-a76f-4afd-bd97-db28b8d43b6e)
 
-To be added:
-- Two way UART
-- Button input
-- The actual program itself...
-  - Like sates and stuff...
+<h2>System Architecture - Draft 4</h2>
+![System Architecture Progress](https://github.com/elenajusto/mcu-demo/assets/56148816/83edc812-3d57-4cab-81c4-1708a6ce1316)
 
-Right now this is just a prototype :)
+<h2>Wiring Schematic></h2>
+![Wiring](https://github.com/elenajusto/mcu-demo/assets/56148816/b30433a8-f108-434d-8bdb-1083498e8ff2)
 
-# System Architecture - Draft 3
-![MCU-Group-Demo-Architecture drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/75996440-e57f-493d-be20-c32e69dafe40)
+<h2>Videos</h2>
 
-
-# Wiring Schematic
-![MCU-Group-Demo-Wiring drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/b4e464b4-1274-4ac7-bd0f-72d66735b0e4)
-
-# Videos
-<h2>Latest prototype demonstrating LEDs and Lights. Does not show UART</h2>
+<h3>Functional Prototype 1</h3>
 https://github.com/elenajusto/mcu-demo/assets/56148816/75a8c238-7ead-4ec0-a6ba-a4ad08aa45b9
 
+<h3>Functional Prototype 2</h3>
+https://github.com/elenajusto/mcu-demo/assets/56148816/345f56e9-1fa9-4e9b-9a9f-997f5ba83be1
