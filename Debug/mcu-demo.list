@@ -7,45 +7,45 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00007a60  080000bc  080000bc  000100bc  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00000220  08007b1c  08007b1c  00017b1c  2**2
+  2 .rodata       00000238  08007b1c  08007b1c  00017b1c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  08007d3c  08007d3c  0002005c  2**0
+  3 .ARM.extab    00000000  08007d54  08007d54  0002005c  2**0
                   CONTENTS
-  4 .ARM          00000008  08007d3c  08007d3c  00017d3c  2**2
+  4 .ARM          00000008  08007d54  08007d54  00017d54  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  08007d44  08007d44  0002005c  2**0
+  5 .preinit_array 00000000  08007d5c  08007d5c  0002005c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  08007d44  08007d44  00017d44  2**2
+  6 .init_array   00000004  08007d5c  08007d5c  00017d5c  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  08007d48  08007d48  00017d48  2**2
+  7 .fini_array   00000004  08007d60  08007d60  00017d60  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         0000005c  20000000  08007d4c  00020000  2**2
+  8 .data         0000005c  20000000  08007d64  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00000494  2000005c  08007da8  0002005c  2**2
+  9 .bss          00000494  2000005c  08007dc0  0002005c  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  200004f0  08007da8  000204f0  2**0
+ 10 ._user_heap_stack 00000600  200004f0  08007dc0  000204f0  2**0
                   ALLOC
  11 .ARM.attributes 00000028  00000000  00000000  0002005c  2**0
                   CONTENTS, READONLY
  12 .comment      00000043  00000000  00000000  00020084  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00017b72  00000000  00000000  000200c7  2**0
+ 13 .debug_info   00017ac9  00000000  00000000  000200c7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002f83  00000000  00000000  00037c39  2**0
+ 14 .debug_abbrev 00002f9c  00000000  00000000  00037b90  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00001528  00000000  00000000  0003abc0  2**3
+ 15 .debug_aranges 00001528  00000000  00000000  0003ab30  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 0000109d  00000000  00000000  0003c0e8  2**0
+ 16 .debug_rnglists 0000109d  00000000  00000000  0003c058  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  0001b179  00000000  00000000  0003d185  2**0
+ 17 .debug_macro  0001b179  00000000  00000000  0003d0f5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00019f13  00000000  00000000  000582fe  2**0
+ 18 .debug_line   00019f0f  00000000  00000000  0005826e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000aef02  00000000  00000000  00072211  2**0
+ 19 .debug_str    000aee9f  00000000  00000000  0007217d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_frame  00005280  00000000  00000000  00121114  2**2
+ 20 .debug_frame  00005280  00000000  00000000  0012101c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000064  00000000  00000000  00126394  2**0
+ 21 .debug_line_str 00000064  00000000  00000000  0012629c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -939,9 +939,6 @@ int main(void)
  800073a:	0018      	movs	r0, r3
  800073c:	f003 ff7a 	bl	8004634 <HAL_TIM_PWM_Start>
 
-  // Scan I2C addresses on startup
-  //i2cScanner();
-
   // I2C Display
   hardwareTestLCD();
  8000740:	f000 fbb8 	bl	8000eb4 <hardwareTestLCD>
@@ -965,10 +962,10 @@ int main(void)
 	  getPotValue();
  8000752:	f000 fb81 	bl	8000e58 <getPotValue>
 
-	 // State Machine
-	 stateMachineDecider();
+	  // State Machine
+	  stateMachineDecider();
  8000756:	f000 fc2f 	bl	8000fb8 <stateMachineDecider>
-	 stateMachineController(stateTracker);
+	  stateMachineController(stateTracker);
  800075a:	4b09      	ldr	r3, [pc, #36]	; (8000780 <main+0x140>)
  800075c:	681b      	ldr	r3, [r3, #0]
  800075e:	0018      	movs	r0, r3
@@ -2302,7 +2299,7 @@ static void MX_GPIO_Init(void)
  8000ec0:	2100      	movs	r1, #0
  8000ec2:	2000      	movs	r0, #0
  8000ec4:	f006 f90c 	bl	80070e0 <I2C_LCD_SetCursor>
-		I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
+		I2C_LCD_WriteString(MyI2C_LCD, "Hardware Test");
  8000ec8:	4b08      	ldr	r3, [pc, #32]	; (8000eec <hardwareTestLCD+0x38>)
  8000eca:	0019      	movs	r1, r3
  8000ecc:	2000      	movs	r0, #0
@@ -2312,7 +2309,7 @@ static void MX_GPIO_Init(void)
  8000ed4:	2100      	movs	r1, #0
  8000ed6:	2000      	movs	r0, #0
  8000ed8:	f006 f902 	bl	80070e0 <I2C_LCD_SetCursor>
-		I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
+		I2C_LCD_WriteString(MyI2C_LCD, "Meow");
  8000edc:	4b04      	ldr	r3, [pc, #16]	; (8000ef0 <hardwareTestLCD+0x3c>)
  8000ede:	0019      	movs	r1, r3
  8000ee0:	2000      	movs	r0, #0
@@ -2382,11 +2379,11 @@ static void MX_GPIO_Init(void)
 	...
 
 08000f4c <stateMachineController>:
+	 }
 
 	 /* State Machine Controller */
 	 // Description: Determines which state the program will execute.
 	 //  Input:		 Integer corresponding to state (1 = A, 2 = B, 3 = C)
-	 // Output:		 None
 	 void stateMachineController(int state){
  8000f4c:	b580      	push	{r7, lr}
  8000f4e:	b082      	sub	sp, #8
@@ -2447,12 +2444,14 @@ static void MX_GPIO_Init(void)
  8000fa6:	46bd      	mov	sp, r7
  8000fa8:	b002      	add	sp, #8
  8000faa:	bd80      	pop	{r7, pc}
- 8000fac:	08007b78 	.word	0x08007b78
+ 8000fac:	08007b70 	.word	0x08007b70
  8000fb0:	20000340 	.word	0x20000340
  8000fb4:	200002ac 	.word	0x200002ac
 
 08000fb8 <stateMachineDecider>:
 
+	 /* State Machine Controller */
+	 // Description: Monitors button pushes to update current state value.
 	 void stateMachineDecider(){
  8000fb8:	b580      	push	{r7, lr}
  8000fba:	af00      	add	r7, sp, #0
@@ -2591,19 +2590,16 @@ static void MX_GPIO_Init(void)
  8001096:	bd80      	pop	{r7, pc}
  8001098:	50000400 	.word	0x50000400
  800109c:	20000398 	.word	0x20000398
- 80010a0:	08007b88 	.word	0x08007b88
+ 80010a0:	08007b80 	.word	0x08007b80
  80010a4:	20000340 	.word	0x20000340
  80010a8:	200002ac 	.word	0x200002ac
- 80010ac:	08007b9c 	.word	0x08007b9c
+ 80010ac:	08007b94 	.word	0x08007b94
  80010b0:	50000800 	.word	0x50000800
- 80010b4:	08007bb0 	.word	0x08007bb0
+ 80010b4:	08007ba8 	.word	0x08007ba8
 
 080010b8 <stateHandlerA>:
 
 	 /* State Handler A */
-	 // Description:
-	 //  Input:
-	 // Output:	State variable
 	 void stateHandlerA(void){
  80010b8:	b580      	push	{r7, lr}
  80010ba:	b084      	sub	sp, #16
@@ -2666,8 +2662,8 @@ static void MX_GPIO_Init(void)
  800111a:	b002      	add	sp, #8
  800111c:	bd80      	pop	{r7, pc}
  800111e:	46c0      	nop			; (mov r8, r8)
- 8001120:	08007b44 	.word	0x08007b44
- 8001124:	08007b54 	.word	0x08007b54
+ 8001120:	08007bbc 	.word	0x08007bbc
+ 8001124:	08007bcc 	.word	0x08007bcc
  8001128:	20000078 	.word	0x20000078
  800112c:	00000fff 	.word	0x00000fff
  8001130:	20000398 	.word	0x20000398
@@ -2675,9 +2671,6 @@ static void MX_GPIO_Init(void)
 08001134 <stateHandlerB>:
 
 	 /* State Handler B */
-	 // Description:
-	 //  Input:
-	 // Output:
 	 void stateHandlerB(void){
  8001134:	b580      	push	{r7, lr}
  8001136:	b084      	sub	sp, #16
@@ -2758,12 +2751,12 @@ static void MX_GPIO_Init(void)
  80011ba:	b002      	add	sp, #8
  80011bc:	bd80      	pop	{r7, pc}
  80011be:	46c0      	nop			; (mov r8, r8)
- 80011c0:	08007bc4 	.word	0x08007bc4
+ 80011c0:	08007bdc 	.word	0x08007bdc
  80011c4:	20000394 	.word	0x20000394
- 80011c8:	08007bcc 	.word	0x08007bcc
+ 80011c8:	08007be4 	.word	0x08007be4
  80011cc:	20000358 	.word	0x20000358
- 80011d0:	08007bd0 	.word	0x08007bd0
- 80011d4:	08007b54 	.word	0x08007b54
+ 80011d0:	08007be8 	.word	0x08007be8
+ 80011d4:	08007bcc 	.word	0x08007bcc
  80011d8:	20000078 	.word	0x20000078
  80011dc:	00000fff 	.word	0x00000fff
  80011e0:	20000398 	.word	0x20000398
@@ -2771,20 +2764,18 @@ static void MX_GPIO_Init(void)
 080011e4 <stateHandlerC>:
 
 	 /* State Handler C */
-	 // Description:
-	 //  Input:
-	 // Output:
 	 void stateHandlerC(void){
  80011e4:	b580      	push	{r7, lr}
  80011e6:	af00      	add	r7, sp, #0
 
+		 // Test function to show State C. State C functionality yet to be added.
 		 HAL_Delay(2000);
  80011e8:	23fa      	movs	r3, #250	; 0xfa
  80011ea:	00db      	lsls	r3, r3, #3
  80011ec:	0018      	movs	r0, r3
  80011ee:	f000 fbad 	bl	800194c <HAL_Delay>
 
-		//Return to State A
+		// Return to State A
 		 stateTracker = 1;
  80011f2:	4b03      	ldr	r3, [pc, #12]	; (8001200 <stateHandlerC+0x1c>)
  80011f4:	2201      	movs	r2, #1
@@ -2797,11 +2788,9 @@ static void MX_GPIO_Init(void)
  8001200:	20000398 	.word	0x20000398
 
 08001204 <HAL_TIM_PeriodElapsedCallback>:
+
 	 /* Controller Function for LED1, LED2 and LED3*/
-	 // Description: Frequency currently determined by each timer's PSC
-	 // 			 and ARR value.
-	 //  Input:
-	 // Output:
+	 // Description: Frequency currently determined by each timer's PSC and ARR value.
 	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  8001204:	b580      	push	{r7, lr}
  8001206:	b082      	sub	sp, #8
@@ -2899,7 +2888,7 @@ static void MX_GPIO_Init(void)
  80012a8:	40002000 	.word	0x40002000
  80012ac:	20000398 	.word	0x20000398
  80012b0:	20000394 	.word	0x20000394
- 80012b4:	08007bdc 	.word	0x08007bdc
+ 80012b4:	08007bf4 	.word	0x08007bf4
  80012b8:	20000358 	.word	0x20000358
  80012bc:	200002ac 	.word	0x200002ac
 
@@ -4031,7 +4020,7 @@ LoopForever:
   ldr r1, =_edata
  800182c:	2000005c 	.word	0x2000005c
   ldr r2, =_sidata
- 8001830:	08007d4c 	.word	0x08007d4c
+ 8001830:	08007d64 	.word	0x08007d64
   ldr r2, =_sbss
  8001834:	2000005c 	.word	0x2000005c
   ldr r4, =_ebss
@@ -11451,7 +11440,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  8003f40:	40021000 	.word	0x40021000
  8003f44:	fffff0ff 	.word	0xfffff0ff
  8003f48:	ffff8fff 	.word	0xffff8fff
- 8003f4c:	08007c20 	.word	0x08007c20
+ 8003f4c:	08007c38 	.word	0x08007c38
  8003f50:	20000000 	.word	0x20000000
  8003f54:	20000004 	.word	0x20000004
 
@@ -11689,7 +11678,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8004092:	46bd      	mov	sp, r7
  8004094:	bdb0      	pop	{r4, r5, r7, pc}
  8004096:	46c0      	nop			; (mov r8, r8)
- 8004098:	08007c60 	.word	0x08007c60
+ 8004098:	08007c78 	.word	0x08007c78
 
 0800409c <HAL_RCCEx_PeriphCLKConfig>:
   *         the RTC clock source: in this case the access to Backup domain is enabled.
@@ -13852,7 +13841,7 @@ HAL_StatusTypeDef HAL_TIM_PWM_ConfigChannel(TIM_HandleTypeDef *htim,
  8004c0a:	b006      	add	sp, #24
  8004c0c:	bd80      	pop	{r7, pc}
  8004c0e:	46c0      	nop			; (mov r8, r8)
- 8004c10:	08007c80 	.word	0x08007c80
+ 8004c10:	08007c98 	.word	0x08007c98
  8004c14:	fffffbff 	.word	0xfffffbff
 
 08004c18 <HAL_TIM_ConfigClockSource>:
@@ -18086,7 +18075,7 @@ HAL_StatusTypeDef UART_SetConfig(UART_HandleTypeDef *huart)
  80062b8:	40004800 	.word	0x40004800
  80062bc:	40004c00 	.word	0x40004c00
  80062c0:	00f42400 	.word	0x00f42400
- 80062c4:	08007cd4 	.word	0x08007cd4
+ 80062c4:	08007cec 	.word	0x08007cec
       }
       else
       {
@@ -18480,7 +18469,7 @@ HAL_StatusTypeDef UART_SetConfig(UART_HandleTypeDef *huart)
  800651a:	46bd      	mov	sp, r7
  800651c:	b010      	add	sp, #64	; 0x40
  800651e:	bdb0      	pop	{r4, r5, r7, pc}
- 8006520:	08007cd4 	.word	0x08007cd4
+ 8006520:	08007cec 	.word	0x08007cec
  8006524:	00f42400 	.word	0x00f42400
 
 08006528 <UART_AdvFeatureConfig>:
@@ -19869,8 +19858,8 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  8006c6e:	b005      	add	sp, #20
  8006c70:	bdf0      	pop	{r4, r5, r6, r7, pc}
  8006c72:	46c0      	nop			; (mov r8, r8)
- 8006c74:	08007cec 	.word	0x08007cec
- 8006c78:	08007cf4 	.word	0x08007cf4
+ 8006c74:	08007d04 	.word	0x08007d04
+ 8006c78:	08007d0c 	.word	0x08007d0c
 
 08006c7c <I2C_LCD_ExpanderWrite>:
 static I2C_LCD_InfoParam_t I2C_LCD_InfoParam_g[I2C_LCD_MAX];
@@ -19938,7 +19927,7 @@ static void I2C_LCD_ExpanderWrite(uint8_t I2C_LCD_InstanceIndex, uint8_t DATA)
  8006ce8:	b005      	add	sp, #20
  8006cea:	bd90      	pop	{r4, r7, pc}
  8006cec:	200003a4 	.word	0x200003a4
- 8006cf0:	08007cfc 	.word	0x08007cfc
+ 8006cf0:	08007d14 	.word	0x08007d14
 
 08006cf4 <I2C_LCD_EnPulse>:
 
@@ -20568,8 +20557,8 @@ void I2C_LCD_SetCursor(uint8_t I2C_LCD_InstanceIndex, uint8_t Col, uint8_t Row)
  8007172:	46bd      	mov	sp, r7
  8007174:	b007      	add	sp, #28
  8007176:	bd90      	pop	{r4, r7, pc}
- 8007178:	08007c10 	.word	0x08007c10
- 800717c:	08007cfc 	.word	0x08007cfc
+ 8007178:	08007c28 	.word	0x08007c28
+ 800717c:	08007d14 	.word	0x08007d14
 
 08007180 <I2C_LCD_WriteString>:
 {
@@ -20687,10 +20676,10 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  8007246:	4798      	blx	r3
  8007248:	3601      	adds	r6, #1
  800724a:	e7f2      	b.n	8007232 <__libc_init_array+0x1e>
- 800724c:	08007d44 	.word	0x08007d44
- 8007250:	08007d44 	.word	0x08007d44
- 8007254:	08007d48 	.word	0x08007d48
- 8007258:	08007d44 	.word	0x08007d44
+ 800724c:	08007d5c 	.word	0x08007d5c
+ 8007250:	08007d5c 	.word	0x08007d5c
+ 8007254:	08007d60 	.word	0x08007d60
+ 8007258:	08007d5c 	.word	0x08007d5c
 
 0800725c <__retarget_lock_acquire_recursive>:
  800725c:	4770      	bx	lr
@@ -21279,9 +21268,9 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  8007704:	9803      	ldr	r0, [sp, #12]
  8007706:	f000 f87b 	bl	8007800 <_printf_i>
  800770a:	e7ea      	b.n	80076e2 <_svfiprintf_r+0x1c2>
- 800770c:	08007d08 	.word	0x08007d08
- 8007710:	08007d0e 	.word	0x08007d0e
- 8007714:	08007d12 	.word	0x08007d12
+ 800770c:	08007d20 	.word	0x08007d20
+ 8007710:	08007d26 	.word	0x08007d26
+ 8007714:	08007d2a 	.word	0x08007d2a
  8007718:	00000000 	.word	0x00000000
  800771c:	0800745d 	.word	0x0800745d
 
@@ -21654,8 +21643,8 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  8007a12:	2500      	movs	r5, #0
  8007a14:	e7f7      	b.n	8007a06 <_printf_i+0x206>
  8007a16:	46c0      	nop			; (mov r8, r8)
- 8007a18:	08007d19 	.word	0x08007d19
- 8007a1c:	08007d2a 	.word	0x08007d2a
+ 8007a18:	08007d31 	.word	0x08007d31
+ 8007a1c:	08007d42 	.word	0x08007d42
 
 08007a20 <memmove>:
  8007a20:	b510      	push	{r4, lr}

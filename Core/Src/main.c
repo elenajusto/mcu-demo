@@ -63,18 +63,6 @@ uint16_t potValue;
 
 int stateTracker;			// 1 = A, 2 = B, 3 = C
 
-// Tracks states (1 = ON, 2 = OFF)
-int flagButtonOne;			// External button
-int flagButtonTwo;			// On-board button
-int flagLCD;
-int flagUART;				// 3 flag states (1 = ON, 2 = OFF, 3 = GPIO)
-int flagPot;
-int flagLED1;				// Blue	LED
-int flagLED2;				// Green LED
-int flagLED3;				// Red LED
-int flagLED4;				// On-board LED (Green)
-int flagServo;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -91,32 +79,22 @@ static void MX_TIM14_Init(void);
 /* USER CODE BEGIN PFP */
 
 // Test functions
-void hardwareTestLED(void);
-void getPotValue(void);
-void hardwareTestButton(void);
-void hardwareTestLCD(void);
+void hardwareTestLED(void);												// Test LEDs wiring
+void hardwareTestButton(void);											// Test buttons wiring
+void hardwareTestLCD(void);												// Test LCD wiring
 
-int myMap(int x, int in_min, int in_max, int out_min, int out_max);
-
-void motorControl(int adcValue);
-int getAdcFromPot();
+// Control functions
+void getPotValue(void);													// ADC Reader - Print value
+int myMap(int x, int in_min, int in_max, int out_min, int out_max);		// Map ADC to PWM
+void motorControl(int adcValue);										// Send PWM to motor
+int getAdcFromPot();													// ADC Reader - Return value
 
 // State Functions
-void stateMachineController(int state);
+void stateMachineController(int state);									// Executes states
+void stateMachineDecider();											 	// Tracks states
 void stateHandlerA(void);
 void stateHandlerB(void);
 void stateHandlerC(void);
-
-// Hardware Control Functions
-void controlButton1(void);
-void controlButton2(void);
-void controlLCD(void);
-void controlUART(void);
-void controlPOT(void);
-void controlLED4(void);
-void controlServo(void);
-
-void stateMachineDecider();
 
 /* USER CODE END PFP */
 
@@ -200,9 +178,6 @@ int main(void)
   // Enable PWM on TIM3 (for motor control)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
 
-  // Scan I2C addresses on startup
-  //i2cScanner();
-
   // I2C Display
   hardwareTestLCD();
 
@@ -221,9 +196,9 @@ int main(void)
 	  HAL_ADC_Start_IT(&hadc1);
 	  getPotValue();
 
-	 // State Machine
-	 stateMachineDecider();
-	 stateMachineController(stateTracker);
+	  // State Machine
+	  stateMachineDecider();
+	  stateMachineController(stateTracker);
 
     /* USER CODE END WHILE */
 
@@ -759,9 +734,9 @@ static void MX_GPIO_Init(void)
 	void hardwareTestLCD(void){
 		I2C_LCD_Init(MyI2C_LCD);
 		I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
-		I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
+		I2C_LCD_WriteString(MyI2C_LCD, "Hardware Test");
 		I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
-		I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
+		I2C_LCD_WriteString(MyI2C_LCD, "Meow");
 	}
 
 	/* Motor control */
@@ -781,7 +756,7 @@ static void MX_GPIO_Init(void)
 		 HAL_UART_Receive_IT(&huart2, 20, 20);
 	 }
 
-	 /* UART Interrupt Handler */
+	 /* UART Receive Interrupt Handler */
 	 // Handles receiving of bytes
 	 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		 UNUSED(huart);
@@ -795,7 +770,6 @@ static void MX_GPIO_Init(void)
 	 /* State Machine Controller */
 	 // Description: Determines which state the program will execute.
 	 //  Input:		 Integer corresponding to state (1 = A, 2 = B, 3 = C)
-	 // Output:		 None
 	 void stateMachineController(int state){
 
 		 switch(state){
@@ -832,6 +806,8 @@ static void MX_GPIO_Init(void)
 		 }
 	 }
 
+	 /* State Machine Controller */
+	 // Description: Monitors button pushes to update current state value.
 	 void stateMachineDecider(){
 		 // Go to State B if it is State A
 		 if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin) && stateTracker == 1){
@@ -872,9 +848,6 @@ static void MX_GPIO_Init(void)
 	 }
 
 	 /* State Handler A */
-	 // Description:
-	 //  Input:
-	 // Output:	State variable
 	 void stateHandlerA(void){
 
 		 // LCD Control
@@ -896,9 +869,6 @@ static void MX_GPIO_Init(void)
 	 }
 
 	 /* State Handler B */
-	 // Description:
-	 //  Input:
-	 // Output:
 	 void stateHandlerB(void){
 
 		 // LCD Control
@@ -923,22 +893,17 @@ static void MX_GPIO_Init(void)
 	 }
 
 	 /* State Handler C */
-	 // Description:
-	 //  Input:
-	 // Output:
 	 void stateHandlerC(void){
 
+		 // Test function to show State C. State C functionality yet to be added.
 		 HAL_Delay(2000);
 
-		//Return to State A
+		// Return to State A
 		 stateTracker = 1;
 	 }
 
 	 /* Controller Function for LED1, LED2 and LED3*/
-	 // Description: Frequency currently determined by each timer's PSC
-	 // 			 and ARR value.
-	 //  Input:
-	 // Output:
+	 // Description: Frequency currently determined by each timer's PSC and ARR value.
 	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 		 // TIM2 controls LED1
