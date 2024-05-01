@@ -104,8 +104,8 @@ int getAdcFromPot();
 
 // State Functions
 void stateMachineController(int state);
-int stateHandlerA(void);
-int stateHandlerB(void);
+void stateHandlerA(void);
+void stateHandlerB(void);
 void stateHandlerC(void);
 
 // Hardware Control Functions
@@ -229,17 +229,17 @@ int main(void)
 	  hardwareTestPot();
 
 	  // Motor control
-	  adcValue = getAdcFromPot();
-	  servoAngle = myMap(adcValue, 60, 4095, 0, 180);
-	  motorControl(servoAngle);
+	  //adcValue = getAdcFromPot();
+	  //servoAngle = myMap(adcValue, 60, 4095, 0, 180);
+	  //motorControl(servoAngle);
 
 	 // Debug message
 	 //sprintf(msg, "Current State: %hu\n\r", stateTracker);
 	 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 	 // State decider
-	 //stateMachineDecider();
-	 //stateMachineController(stateTracker);
+	 stateMachineDecider();
+	 stateMachineController(stateTracker);
 
     /* USER CODE END WHILE */
 
@@ -860,8 +860,8 @@ static void MX_GPIO_Init(void)
 			 case 1:
 
 				 // Debug message
-				 sprintf(msg, "Executing A.\n\r");
-				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+				 //sprintf(msg, "Executing A.\n\r");
+				 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 				 stateHandlerA();
 				 break;
@@ -926,7 +926,7 @@ static void MX_GPIO_Init(void)
 	 // Description:
 	 //  Input:
 	 // Output:	State variable
-	 int stateHandlerA(void){
+	 void stateHandlerA(void){
 
 		 // LCD Control
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
@@ -934,19 +934,13 @@ static void MX_GPIO_Init(void)
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
 		 I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
 
-		 // UART Control
-		 //uint16_t potValue;
+		 // Get potentiometer value
+		 HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+		 hardwareTestPot();
 
-		 //HAL_ADC_PollForConversion(&hadc1, 5);	// Trigger ADC peripheral
-		 //potValue = HAL_ADC_GetValue(&hadc1);	// Get pot value
-
-		 //sprintf(msg, "Autumn 2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
-		 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-		 // LED 4 Control
-
-		 // Motor Control
-		 motorControl(myMap(potValue, 60, 4095, 0, 180));
+		 // Motor control
+		 int servoAngle = myMap(getAdcFromPot(), 60, 4095, 0, 180);
+		 motorControl(servoAngle);
 
 		 // LED 1 Control
 
@@ -955,14 +949,14 @@ static void MX_GPIO_Init(void)
 		 // LED 3 Control
 
 		 // No button pushes - Stay in State A
-		 return(1);
+		 stateTracker = 1;
 	 }
 
 	 /* State Handler B */
 	 // Description:
 	 //  Input:
 	 // Output:
-	 int stateHandlerB(void){
+	 void stateHandlerB(void){
 
 		 // Push Button 1 Control
 		 	 // toggle whether led1 or led2 are blinking 1hz
@@ -985,7 +979,7 @@ static void MX_GPIO_Init(void)
 		 // LED 3 Control
 
 		 // No button pushes - Stay in State B
-		 return(2);
+		 stateTracker = 2;
 	 }
 
 	 /* State Handler C */
@@ -994,6 +988,7 @@ static void MX_GPIO_Init(void)
 	 // Output:
 	 void stateHandlerC(void){
 
+		 HAL_Delay(2000);
 		 // Push Button 2 Control
 
 		 // Push Button 1 Control
@@ -1016,51 +1011,7 @@ static void MX_GPIO_Init(void)
 		 // LED 3 Control
 
 		//Return to State A
-
-	 }
-
-
-	 // Hardware Control Functions
-
-
-	 /* Controller Function for Button 1*/
-	 // Description:
-	 //  Input:
-	 // Output:
-	 void controlButton1(void){
-
-	 }
-
-	 /* Controller Function for Button 2*/
-	 // Description:
-	 //  Input:
-	 // Output:
-	 void controlButton2(void){
-
-	 }
-
-	 /* Controller Function for LCD*/
-	 // Description:
-	 //  Input:
-	 // Output:
-	 void controlLCD(void){
-
-	 }
-
-	 /* Controller Function for UART*/
-	 // Description:
-	 //  Input:
-	 // Output:
-	 void controlUART(void){
-
-	 }
-
-	 /* Controller Function for Potentiometer*/
-	 // Description:
-	 //  Input:
-	 // Output:
-	 void controlPOT(void){
-
+		 stateTracker = 1;
 	 }
 
 	 /* Controller Function for LED1, LED2 and LED3*/
@@ -1086,22 +1037,6 @@ static void MX_GPIO_Init(void)
 				 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
 			 }
 		 }
-	 }
-
-	 /* Controller Function for LED4*/
-	 // Description:
-	 //  Input:
-	 // Output:
-	 void controlLED4(void){
-
-	 }
-
-	 /* Controller Function for Servo*/
-	 // Description:
-	 //  Input:
-	 // Output:
-	 void controlServo(void){
-
 	 }
 
 /* USER CODE END 4 */
