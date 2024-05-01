@@ -926,7 +926,7 @@ static void MX_GPIO_Init(void)
 	 }
 
 	 /* Controller Function for LED1, LED2 and LED3*/
-	 // Description: Frequency currently determined by each timer's PSC and ARR value.
+	 // Description: Frequency currently determined by each timer's PSC value.
 	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 		 // TIM2 controls LED1
