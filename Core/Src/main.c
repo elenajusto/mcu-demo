@@ -92,11 +92,10 @@ static void MX_TIM14_Init(void);
 
 // Test functions
 void hardwareTestLED(void);
-void hardwareTestPot(void);
+void getPotValue(void);
 void hardwareTestButton(void);
 void hardwareTestLCD(void);
 
-void i2cScanner(void);
 int myMap(int x, int in_min, int in_max, int out_min, int out_max);
 
 void motorControl(int adcValue);
@@ -220,7 +219,7 @@ int main(void)
   {
 	  // Get potentiometer value
 	  HAL_ADC_Start_IT(&hadc1);
-	  hardwareTestPot();
+	  getPotValue();
 
 	 // State Machine
 	 stateMachineDecider();
@@ -723,20 +722,16 @@ static void MX_GPIO_Init(void)
 		HAL_Delay(100);
 	}
 
-	/* Test potentiometer is working */
-	void hardwareTestPot(void){
-
-		/* Init variable for pot value */
-		//uint16_t potValue;
+	/* Get ADC value from potentiometer */
+	void getPotValue(void){
 
 		/* Get pot value */
 		HAL_ADC_PollForConversion(&hadc1, 5);
 		potValue = HAL_ADC_GetValue(&hadc1);
 
-		/* Print value */
+		/* Debug */
 		//sprintf(msg, "potValue: %hu\r\n", potValue);
 		//HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
 	}
 
 	/* getADC from Pot */
@@ -773,38 +768,6 @@ static void MX_GPIO_Init(void)
 	void motorControl(int adcValue){
 		__HAL_TIM_SET_COMPARE (&htim3, TIM_CHANNEL_1, adcValue); // Interpolate pot values to PWM range
 
-	}
-
-	/* I2C Scanner Script */
-	/* Author:     Khaled Magdy */
-	/* Source: 	   www.DeepBlueMbedded.com */
-	void i2cScanner(void){
-		uint8_t Buffer[25] = {0};
-		uint8_t Space[] = " - ";
-		uint8_t StartMSG[] = "Starting I2C Scanning: \r\n";
-		uint8_t EndMSG[] = "Done! \r\n\r\n";
-
-		uint8_t i = 0, ret;
-
-		HAL_Delay(1000);
-
-		/*-[ I2C Bus Scanning ]-*/
-		HAL_UART_Transmit(&huart2, StartMSG, sizeof(StartMSG), 10000);
-		for(i=1; i<128; i++)
-		{
-			ret = HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i<<1), 3, 5);
-			if (ret != HAL_OK) /* No ACK Received At That Address */
-			{
-				HAL_UART_Transmit(&huart2, Space, sizeof(Space), 10000);
-			}
-			else if(ret == HAL_OK)
-			{
-				sprintf(Buffer, "0x%X", i);
-				HAL_UART_Transmit(&huart2, Buffer, sizeof(Buffer), 10000);
-			}
-		}
-		HAL_UART_Transmit(&huart2, EndMSG, sizeof(EndMSG), 10000);
-		/*--[ Scanning Done ]--*/
 	}
 
 	/* Mapping function */
@@ -883,7 +846,6 @@ static void MX_GPIO_Init(void)
 			 // Go to State B
 			 stateTracker = 2;
 
-
 		 // Go to State A if it is State B
 		 } else if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin) && stateTracker == 2){
 
@@ -923,7 +885,7 @@ static void MX_GPIO_Init(void)
 
 		 // Get potentiometer value
 		 HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
-		 hardwareTestPot();
+		 getPotValue();
 
 		 // Motor control
 		 int servoAngle = myMap(getAdcFromPot(), 60, 4095, 0, 180);
@@ -950,7 +912,7 @@ static void MX_GPIO_Init(void)
 
 		 // Get potentiometer value
 		 HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
-		 hardwareTestPot();
+		 getPotValue();
 
 		 // Motor control
 		 int servoAngle = myMap(getAdcFromPot(), 60, 4095, 0, 180);
@@ -967,26 +929,6 @@ static void MX_GPIO_Init(void)
 	 void stateHandlerC(void){
 
 		 HAL_Delay(2000);
-		 // Push Button 2 Control
-
-		 // Push Button 1 Control
-
-		 // LCD Control
-
-		 // UART Control
-		 	 // reconfigure the UART TX pin using registers to a general output pin
-		 	 // UART TX pin 3 times at 1hz.
-		 	 // after flashing led, the uart tx pin is reconfigured to enable UART communication.
-
-		 // LED 4 Control
-
-		 // Potentiometer Control
-
-		 // LED 1 Control
-
-		 // LED 2 Control
-
-		 // LED 3 Control
 
 		//Return to State A
 		 stateTracker = 1;
@@ -1004,7 +946,7 @@ static void MX_GPIO_Init(void)
 			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
 
 		 // TIM6 controls LED2
-		 } else if(htim->Instance == TIM6){b
+		 } else if(htim->Instance == TIM6){
 			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
 
 		 // TIM7 controls LED3
