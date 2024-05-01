@@ -575,7 +575,7 @@ static void MX_TIM14_Init(void)
 
   /* USER CODE END TIM14_Init 1 */
   htim14.Instance = TIM14;
-  htim14.Init.Prescaler = 997;
+  htim14.Init.Prescaler = 7999;
   htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim14.Init.Period = 999;
   htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -851,8 +851,8 @@ static void MX_GPIO_Init(void)
 			 case 2:
 
 				 // Debug message
-				 sprintf(msg, "Executing B.\n\r");
-				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+				 //sprintf(msg, "Executing B.\n\r");
+				 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 				 stateHandlerB();
 				 break;
@@ -877,6 +877,9 @@ static void MX_GPIO_Init(void)
 			 sprintf(msg, "Going to State B.\n\r");
 			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
+			 // Clear LCD
+			 I2C_LCD_Clear(MyI2C_LCD);
+
 			 // Go to State B
 			 stateTracker = 2;
 
@@ -887,6 +890,9 @@ static void MX_GPIO_Init(void)
 			 // Debug message
 			 sprintf(msg, "Going to State A.\n\r");
 			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+			 // Clear LCD
+			 I2C_LCD_Clear(MyI2C_LCD);
 
 			 // Stay in State A
 			 stateTracker = 1;
@@ -923,12 +929,6 @@ static void MX_GPIO_Init(void)
 		 int servoAngle = myMap(getAdcFromPot(), 60, 4095, 0, 180);
 		 motorControl(servoAngle);
 
-		 // LED 1 Control
-
-		 // LED 2 Control
-
-		 // LED 3 Control
-
 		 // No button pushes - Stay in State A
 		 stateTracker = 1;
 	 }
@@ -939,25 +939,22 @@ static void MX_GPIO_Init(void)
 	 // Output:
 	 void stateHandlerB(void){
 
-		 // Push Button 1 Control
-		 	 // toggle whether led1 or led2 are blinking 1hz
-
 		 // LCD Control
-		 	 //Updated with Adc value
+		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
+		 I2C_LCD_WriteString(MyI2C_LCD, "ADC: ");
+		 sprintf(msg2, "%hu", potValue);
+		 I2C_LCD_WriteString(MyI2C_LCD, msg2);
+		 I2C_LCD_WriteString(MyI2C_LCD, " State B");
+		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
+		 I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
 
-		 // UART Control
-		 	 //Disabled
+		 // Get potentiometer value
+		 HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+		 hardwareTestPot();
 
-		 // LED 4 Control
-
-		 // Potentiometer Control
-		 	 // change the blinking freq of led 3 & servo
-
-		 // LED 1 Control
-
-		 // LED 2 Control
-
-		 // LED 3 Control
+		 // Motor control
+		 int servoAngle = myMap(getAdcFromPot(), 60, 4095, 0, 180);
+		 motorControl(servoAngle);
 
 		 // No button pushes - Stay in State B
 		 stateTracker = 2;
@@ -1002,20 +999,25 @@ static void MX_GPIO_Init(void)
 	 // Output:
 	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
-		 // This callback is automatically called by the HAL on the UEV event
+		 // TIM2 controls LED1
 		 if(htim->Instance == TIM2){
 			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
 
-		 } else if(htim->Instance == TIM6){
+		 // TIM6 controls LED2
+		 } else if(htim->Instance == TIM6){b
 			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
 
+		 // TIM7 controls LED3
 		 } else if(htim->Instance == TIM7){
 			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
 
+	     // TIM14 controls UART
 		 } else if(htim->Instance == TIM14){
 			 if (stateTracker == 1){
 				 sprintf(msg2, "Autumn2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
 				 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
+			 } else if (stateTracker == 2){
+				 ; // UART do nothing
 			 }
 		 }
 	 }
