@@ -1,13 +1,13 @@
 # MCU Demo Project
 
 <h2>State Machine - Current Progress</h2>
-![State Machine Progress](https://github.com/elenajusto/mcu-demo/assets/56148816/f9686090-f8a3-49ba-823d-8d36d910034b)
+![State Machine Progress](https://github.com/elenajusto/mcu-demo/assets/56148816/7134aaa8-a76f-4afd-bd97-db28b8d43b6e)
 
 <h2>System Architecture - Draft 4</h2>
-![System Architecture Progress](https://github.com/elenajusto/mcu-demo/assets/56148816/85495228-4d36-491e-adb7-6dd51241e777)
+![System Architecture Progress](https://github.com/elenajusto/mcu-demo/assets/56148816/83edc812-3d57-4cab-81c4-1708a6ce1316)
 
 <h2>Wiring Schematic></h2>
-![Wiring](https://github.com/elenajusto/mcu-demo/assets/56148816/f2a7fe82-57fa-467a-8abb-8cf052151370)
+![Wiring](https://github.com/elenajusto/mcu-demo/assets/56148816/b30433a8-f108-434d-8bdb-1083498e8ff2)
 
 <h2>Videos</h2>
 
