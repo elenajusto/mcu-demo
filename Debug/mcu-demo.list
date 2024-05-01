@@ -39,9 +39,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  0001b179  00000000  00000000  0003d0f5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00019f11  00000000  00000000  0005826e  2**0
+ 18 .debug_line   00019f13  00000000  00000000  0005826e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000aee9f  00000000  00000000  0007217f  2**0
+ 19 .debug_str    000aee9f  00000000  00000000  00072181  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  20 .debug_frame  00005280  00000000  00000000  00121020  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -2777,8 +2777,11 @@ static void MX_GPIO_Init(void)
  80011ea:	00db      	lsls	r3, r3, #3
  80011ec:	0018      	movs	r0, r3
  80011ee:	f000 fbad 	bl	800194c <HAL_Delay>
+		 // Set pin to toggle output based on TIM with frequency 1 Hz
+		 // Cycle for 3 seconds
+		 // Turn back into UART (tx)
 
-		// Return to State A
+		 // Return to State A
 		 stateTracker = 1;
  80011f2:	4b03      	ldr	r3, [pc, #12]	; (8001200 <stateHandlerC+0x1c>)
  80011f4:	2201      	movs	r2, #1

@@ -911,7 +911,13 @@ static void MX_GPIO_Init(void)
 		 // Test function to show State C. State C functionality yet to be added.
 		 HAL_Delay(2000);
 
-		// Return to State A
+		 // Reconfigure UART Tx Pin (PA2)
+		 // Turn into GPIO (output)
+		 // Set pin to toggle output based on TIM with frequency 1 Hz
+		 // Cycle for 3 seconds
+		 // Turn back into UART (tx)
+
+		 // Return to State A
 		 stateTracker = 1;
 	 }
 
