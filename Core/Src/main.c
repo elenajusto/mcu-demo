@@ -1082,8 +1082,8 @@ static void MX_GPIO_Init(void)
 
 		 } else if(htim->Instance == TIM14){
 			 if (stateTracker == 1){
-				 sprintf(msg, "2 Hz UART %hu\r\n", potValue);
-				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+				 sprintf(msg2, "Autumn2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
 			 }
 		 }
 	 }

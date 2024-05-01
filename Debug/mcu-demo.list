@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         0000773c  080000bc  080000bc  000100bc  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00000234  080077f8  080077f8  000177f8  2**2
+  2 .rodata       00000258  080077f8  080077f8  000177f8  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  08007a2c  08007a2c  0002005c  2**0
+  3 .ARM.extab    00000000  08007a50  08007a50  0002005c  2**0
                   CONTENTS
-  4 .ARM          00000008  08007a2c  08007a2c  00017a2c  2**2
+  4 .ARM          00000008  08007a50  08007a50  00017a50  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  08007a34  08007a34  0002005c  2**0
+  5 .preinit_array 00000000  08007a58  08007a58  0002005c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  08007a34  08007a34  00017a34  2**2
+  6 .init_array   00000004  08007a58  08007a58  00017a58  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  08007a38  08007a38  00017a38  2**2
+  7 .fini_array   00000004  08007a5c  08007a5c  00017a5c  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         0000005c  20000000  08007a3c  00020000  2**2
+  8 .data         0000005c  20000000  08007a60  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00000458  2000005c  08007a98  0002005c  2**2
+  9 .bss          0000047c  2000005c  08007abc  0002005c  2**2
                   ALLOC
- 10 ._user_heap_stack 00000604  200004b4  08007a98  000204b4  2**0
+ 10 ._user_heap_stack 00000600  200004d8  08007abc  000204d8  2**0
                   ALLOC
  11 .ARM.attributes 00000028  00000000  00000000  0002005c  2**0
                   CONTENTS, READONLY
@@ -992,7 +992,7 @@ int main(void)
  8000788:	20000214 	.word	0x20000214
  800078c:	20000260 	.word	0x20000260
  8000790:	2000017c 	.word	0x2000017c
- 8000794:	2000035c 	.word	0x2000035c
+ 8000794:	20000380 	.word	0x20000380
  8000798:	20000078 	.word	0x20000078
  800079c:	00000fff 	.word	0x00000fff
 
@@ -2266,7 +2266,7 @@ static void MX_GPIO_Init(void)
  8000e90:	46bd      	mov	sp, r7
  8000e92:	bd80      	pop	{r7, pc}
  8000e94:	20000078 	.word	0x20000078
- 8000e98:	20000358 	.word	0x20000358
+ 8000e98:	2000037c 	.word	0x2000037c
 
 08000e9c <getAdcFromPot>:
 
@@ -2425,8 +2425,8 @@ static void MX_GPIO_Init(void)
  8000f7c:	0018      	movs	r0, r3
  8000f7e:	f001 fd2a 	bl	80029d6 <HAL_GPIO_TogglePin>
 			 if (stateTracker == 1){
-				 sprintf(msg, "2 Hz UART %hu\r\n", potValue);
-				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+				 sprintf(msg2, "Autumn2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
 			 }
 		 }
 	 }
@@ -2470,7 +2470,7 @@ static void MX_GPIO_Init(void)
  8000fc0:	681b      	ldr	r3, [r3, #0]
  8000fc2:	2b01      	cmp	r3, #1
  8000fc4:	d113      	bne.n	8000fee <HAL_TIM_PeriodElapsedCallback+0x8a>
-				 sprintf(msg, "2 Hz UART %hu\r\n", potValue);
+				 sprintf(msg2, "Autumn2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
  8000fc6:	4b12      	ldr	r3, [pc, #72]	; (8001010 <HAL_TIM_PeriodElapsedCallback+0xac>)
  8000fc8:	881b      	ldrh	r3, [r3, #0]
  8000fca:	001a      	movs	r2, r3
@@ -2478,7 +2478,7 @@ static void MX_GPIO_Init(void)
  8000fce:	4b12      	ldr	r3, [pc, #72]	; (8001018 <HAL_TIM_PeriodElapsedCallback+0xb4>)
  8000fd0:	0018      	movs	r0, r3
  8000fd2:	f005 ff5f 	bl	8006e94 <siprintf>
-				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
  8000fd6:	4b10      	ldr	r3, [pc, #64]	; (8001018 <HAL_TIM_PeriodElapsedCallback+0xb4>)
  8000fd8:	0018      	movs	r0, r3
  8000fda:	f7ff f893 	bl	8000104 <strlen>
@@ -2500,8 +2500,8 @@ static void MX_GPIO_Init(void)
  8001000:	50000400 	.word	0x50000400
  8001004:	40001400 	.word	0x40001400
  8001008:	40002000 	.word	0x40002000
- 800100c:	2000035c 	.word	0x2000035c
- 8001010:	20000358 	.word	0x20000358
+ 800100c:	20000380 	.word	0x20000380
+ 8001010:	2000037c 	.word	0x2000037c
  8001014:	080078f0 	.word	0x080078f0
  8001018:	20000340 	.word	0x20000340
  800101c:	200002ac 	.word	0x200002ac
@@ -3520,8 +3520,8 @@ void *_sbrk(ptrdiff_t incr)
  800152e:	bd80      	pop	{r7, pc}
  8001530:	20009000 	.word	0x20009000
  8001534:	00000400 	.word	0x00000400
- 8001538:	20000360 	.word	0x20000360
- 800153c:	200004b8 	.word	0x200004b8
+ 8001538:	20000384 	.word	0x20000384
+ 800153c:	200004d8 	.word	0x200004d8
 
 08001540 <SystemInit>:
   * @brief  Setup the microcontroller system.
@@ -3634,11 +3634,11 @@ LoopForever:
   ldr r1, =_edata
  800158c:	2000005c 	.word	0x2000005c
   ldr r2, =_sidata
- 8001590:	08007a3c 	.word	0x08007a3c
+ 8001590:	08007a60 	.word	0x08007a60
   ldr r2, =_sbss
  8001594:	2000005c 	.word	0x2000005c
   ldr r4, =_ebss
- 8001598:	200004b4 	.word	0x200004b4
+ 8001598:	200004d8 	.word	0x200004d8
 
 0800159c <ADC1_COMP_IRQHandler>:
  * @retval None
@@ -3841,7 +3841,7 @@ __weak void HAL_IncTick(void)
  800168c:	bd80      	pop	{r7, pc}
  800168e:	46c0      	nop			; (mov r8, r8)
  8001690:	20000008 	.word	0x20000008
- 8001694:	20000364 	.word	0x20000364
+ 8001694:	20000388 	.word	0x20000388
 
 08001698 <HAL_GetTick>:
   * @note This function is declared as __weak to be overwritten in case of other
@@ -3860,7 +3860,7 @@ __weak uint32_t HAL_GetTick(void)
  80016a2:	46bd      	mov	sp, r7
  80016a4:	bd80      	pop	{r7, pc}
  80016a6:	46c0      	nop			; (mov r8, r8)
- 80016a8:	20000364 	.word	0x20000364
+ 80016a8:	20000388 	.word	0x20000388
 
 080016ac <HAL_SYSCFG_StrobeDBattpinsConfig>:
   *         @arg @ref SYSCFG_UCPD1_STROBE
@@ -10947,7 +10947,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  8003c1c:	40021000 	.word	0x40021000
  8003c20:	fffff0ff 	.word	0xfffff0ff
  8003c24:	ffff8fff 	.word	0xffff8fff
- 8003c28:	08007910 	.word	0x08007910
+ 8003c28:	08007934 	.word	0x08007934
  8003c2c:	20000000 	.word	0x20000000
  8003c30:	20000004 	.word	0x20000004
 
@@ -11185,7 +11185,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8003d6e:	46bd      	mov	sp, r7
  8003d70:	bdb0      	pop	{r4, r5, r7, pc}
  8003d72:	46c0      	nop			; (mov r8, r8)
- 8003d74:	08007950 	.word	0x08007950
+ 8003d74:	08007974 	.word	0x08007974
 
 08003d78 <HAL_RCCEx_PeriphCLKConfig>:
   *         the RTC clock source: in this case the access to Backup domain is enabled.
@@ -13348,7 +13348,7 @@ HAL_StatusTypeDef HAL_TIM_PWM_ConfigChannel(TIM_HandleTypeDef *htim,
  80048e6:	b006      	add	sp, #24
  80048e8:	bd80      	pop	{r7, pc}
  80048ea:	46c0      	nop			; (mov r8, r8)
- 80048ec:	08007970 	.word	0x08007970
+ 80048ec:	08007994 	.word	0x08007994
  80048f0:	fffffbff 	.word	0xfffffbff
 
 080048f4 <HAL_TIM_ConfigClockSource>:
@@ -17582,7 +17582,7 @@ HAL_StatusTypeDef UART_SetConfig(UART_HandleTypeDef *huart)
  8005f94:	40004800 	.word	0x40004800
  8005f98:	40004c00 	.word	0x40004c00
  8005f9c:	00f42400 	.word	0x00f42400
- 8005fa0:	080079c4 	.word	0x080079c4
+ 8005fa0:	080079e8 	.word	0x080079e8
       }
       else
       {
@@ -17976,7 +17976,7 @@ HAL_StatusTypeDef UART_SetConfig(UART_HandleTypeDef *huart)
  80061f6:	46bd      	mov	sp, r7
  80061f8:	b010      	add	sp, #64	; 0x40
  80061fa:	bdb0      	pop	{r4, r5, r7, pc}
- 80061fc:	080079c4 	.word	0x080079c4
+ 80061fc:	080079e8 	.word	0x080079e8
  8006200:	00f42400 	.word	0x00f42400
 
 08006204 <UART_AdvFeatureConfig>:
@@ -19365,8 +19365,8 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  800694a:	b005      	add	sp, #20
  800694c:	bdf0      	pop	{r4, r5, r6, r7, pc}
  800694e:	46c0      	nop			; (mov r8, r8)
- 8006950:	080079dc 	.word	0x080079dc
- 8006954:	080079e4 	.word	0x080079e4
+ 8006950:	08007a00 	.word	0x08007a00
+ 8006954:	08007a08 	.word	0x08007a08
 
 08006958 <I2C_LCD_ExpanderWrite>:
 static I2C_LCD_InfoParam_t I2C_LCD_InfoParam_g[I2C_LCD_MAX];
@@ -19433,8 +19433,8 @@ static void I2C_LCD_ExpanderWrite(uint8_t I2C_LCD_InstanceIndex, uint8_t DATA)
  80069c2:	46bd      	mov	sp, r7
  80069c4:	b005      	add	sp, #20
  80069c6:	bd90      	pop	{r4, r7, pc}
- 80069c8:	20000368 	.word	0x20000368
- 80069cc:	080079ec 	.word	0x080079ec
+ 80069c8:	2000038c 	.word	0x2000038c
+ 80069cc:	08007a10 	.word	0x08007a10
 
 080069d0 <I2C_LCD_EnPulse>:
 
@@ -19903,7 +19903,7 @@ void I2C_LCD_Init(uint8_t I2C_LCD_InstanceIndex)
  8006d24:	e000e010 	.word	0xe000e010
  8006d28:	20000000 	.word	0x20000000
  8006d2c:	000f4240 	.word	0x000f4240
- 8006d30:	20000368 	.word	0x20000368
+ 8006d30:	2000038c 	.word	0x2000038c
 
 08006d34 <I2C_LCD_Clear>:
 
@@ -20064,8 +20064,8 @@ void I2C_LCD_SetCursor(uint8_t I2C_LCD_InstanceIndex, uint8_t Col, uint8_t Row)
  8006e4e:	46bd      	mov	sp, r7
  8006e50:	b007      	add	sp, #28
  8006e52:	bd90      	pop	{r4, r7, pc}
- 8006e54:	08007900 	.word	0x08007900
- 8006e58:	080079ec 	.word	0x080079ec
+ 8006e54:	08007924 	.word	0x08007924
+ 8006e58:	08007a10 	.word	0x08007a10
 
 08006e5c <I2C_LCD_WriteString>:
 {
@@ -20183,10 +20183,10 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  8006f22:	4798      	blx	r3
  8006f24:	3601      	adds	r6, #1
  8006f26:	e7f2      	b.n	8006f0e <__libc_init_array+0x1e>
- 8006f28:	08007a34 	.word	0x08007a34
- 8006f2c:	08007a34 	.word	0x08007a34
- 8006f30:	08007a38 	.word	0x08007a38
- 8006f34:	08007a34 	.word	0x08007a34
+ 8006f28:	08007a58 	.word	0x08007a58
+ 8006f2c:	08007a58 	.word	0x08007a58
+ 8006f30:	08007a5c 	.word	0x08007a5c
+ 8006f34:	08007a58 	.word	0x08007a58
 
 08006f38 <__retarget_lock_acquire_recursive>:
  8006f38:	4770      	bx	lr
@@ -20265,7 +20265,7 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  8006fc6:	6054      	str	r4, [r2, #4]
  8006fc8:	e7ca      	b.n	8006f60 <_free_r+0x24>
  8006fca:	46c0      	nop			; (mov r8, r8)
- 8006fcc:	200004ac 	.word	0x200004ac
+ 8006fcc:	200004d0 	.word	0x200004d0
 
 08006fd0 <sbrk_aligned>:
  8006fd0:	b570      	push	{r4, r5, r6, lr}
@@ -20297,7 +20297,7 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  800700a:	0028      	movs	r0, r5
  800700c:	bd70      	pop	{r4, r5, r6, pc}
  800700e:	46c0      	nop			; (mov r8, r8)
- 8007010:	200004b0 	.word	0x200004b0
+ 8007010:	200004d4 	.word	0x200004d4
 
 08007014 <_malloc_r>:
  8007014:	b5f7      	push	{r0, r1, r2, r4, r5, r6, r7, lr}
@@ -20422,7 +20422,7 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  800710e:	605b      	str	r3, [r3, #4]
  8007110:	deff      	udf	#255	; 0xff
  8007112:	46c0      	nop			; (mov r8, r8)
- 8007114:	200004ac 	.word	0x200004ac
+ 8007114:	200004d0 	.word	0x200004d0
 
 08007118 <__malloc_lock>:
  8007118:	b510      	push	{r4, lr}
@@ -20430,7 +20430,7 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  800711c:	f7ff ff0c 	bl	8006f38 <__retarget_lock_acquire_recursive>
  8007120:	bd10      	pop	{r4, pc}
  8007122:	46c0      	nop			; (mov r8, r8)
- 8007124:	200004a8 	.word	0x200004a8
+ 8007124:	200004cc 	.word	0x200004cc
 
 08007128 <__malloc_unlock>:
  8007128:	b510      	push	{r4, lr}
@@ -20438,7 +20438,7 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  800712c:	f7ff ff05 	bl	8006f3a <__retarget_lock_release_recursive>
  8007130:	bd10      	pop	{r4, pc}
  8007132:	46c0      	nop			; (mov r8, r8)
- 8007134:	200004a8 	.word	0x200004a8
+ 8007134:	200004cc 	.word	0x200004cc
 
 08007138 <__ssputs_r>:
  8007138:	b5f0      	push	{r4, r5, r6, r7, lr}
@@ -20775,9 +20775,9 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  80073e0:	9803      	ldr	r0, [sp, #12]
  80073e2:	f000 f87b 	bl	80074dc <_printf_i>
  80073e6:	e7ea      	b.n	80073be <_svfiprintf_r+0x1c2>
- 80073e8:	080079f8 	.word	0x080079f8
- 80073ec:	080079fe 	.word	0x080079fe
- 80073f0:	08007a02 	.word	0x08007a02
+ 80073e8:	08007a1c 	.word	0x08007a1c
+ 80073ec:	08007a22 	.word	0x08007a22
+ 80073f0:	08007a26 	.word	0x08007a26
  80073f4:	00000000 	.word	0x00000000
  80073f8:	08007139 	.word	0x08007139
 
@@ -21150,8 +21150,8 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  80076ee:	2500      	movs	r5, #0
  80076f0:	e7f7      	b.n	80076e2 <_printf_i+0x206>
  80076f2:	46c0      	nop			; (mov r8, r8)
- 80076f4:	08007a09 	.word	0x08007a09
- 80076f8:	08007a1a 	.word	0x08007a1a
+ 80076f4:	08007a2d 	.word	0x08007a2d
+ 80076f8:	08007a3e 	.word	0x08007a3e
 
 080076fc <memmove>:
  80076fc:	b510      	push	{r4, lr}
@@ -21191,7 +21191,7 @@ void I2C_LCD_WriteString(uint8_t I2C_LCD_InstanceIndex, char *Str)
  800773e:	6023      	str	r3, [r4, #0]
  8007740:	bd70      	pop	{r4, r5, r6, pc}
  8007742:	46c0      	nop			; (mov r8, r8)
- 8007744:	200004a4 	.word	0x200004a4
+ 8007744:	200004c8 	.word	0x200004c8
 
 08007748 <memchr>:
  8007748:	b2c9      	uxtb	r1, r1
