@@ -895,10 +895,10 @@ static void MX_GPIO_Init(void)
 
 		 // LED1 Toggle
 		 // B1 pressed = Turn off
-		 // B1 not pressed = Turn on
+		 // B1 not pressed = Turn on, blink at 1 Hz (Modify PSC)
 
 		 // LED2 Toggle
-		 // B1 pressed = Turn on
+		 // B1 pressed = Turn on, blink at 1 Hz (Modify PSC)
 		 // B1 not pressed = Turn off
 
 		 // No button pushes - Stay in State B
