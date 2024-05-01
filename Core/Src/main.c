@@ -115,6 +115,8 @@ void controlPOT(void);
 void controlLED4(void);
 void controlServo(void);
 
+void stateMachineDecider();
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -198,7 +200,7 @@ int main(void)
   // Variables
   int servoAngle;
   int adcValue;
-  int stateTracker = 1;
+  stateTracker = 1;
 
   /* USER CODE END 2 */
 
@@ -210,16 +212,25 @@ int main(void)
 	  //stateMachineController(stateTracker);
 
 	  // Testing UART receiving
-	  HAL_UART_Receive_IT(&huart2, 1, 1);
+	  //HAL_UART_Receive_IT(&huart2, 1, 1);
 
 	  // Get potentiometer value
-	  HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
-	  hardwareTestPot();
+	  //HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+	  //hardwareTestPot();
 
 	  // Motor control
-	  adcValue = getAdcFromPot();
-	  servoAngle = myMap(adcValue, 60, 4095, 0, 180);
-	  motorControl(servoAngle);
+	  //adcValue = getAdcFromPot();
+	  //servoAngle = myMap(adcValue, 60, 4095, 0, 180);
+	  //motorControl(servoAngle);
+
+	 // Debug message
+	 sprintf(msg, "Current State: %hu\n\r", stateTracker);
+	 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+	 // State decider
+	 stateMachineDecider();
+
+	 HAL_Delay(500);
 
     /* USER CODE END WHILE */
 
@@ -624,9 +635,6 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(BUTTON_2_GPIO_Port, BUTTON_2_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -635,12 +643,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : BUTTON_2_Pin LED_1_Pin */
-  GPIO_InitStruct.Pin = BUTTON_2_Pin|LED_1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  /*Configure GPIO pin : BUTTON_INPUT_2_Pin */
+  GPIO_InitStruct.Pin = BUTTON_INPUT_2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(BUTTON_INPUT_2_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_GREEN_Pin */
   GPIO_InitStruct.Pin = LED_GREEN_Pin;
@@ -655,6 +662,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LED_1_Pin */
+  GPIO_InitStruct.Pin = LED_1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : BUTTON_INPUT_Pin */
   GPIO_InitStruct.Pin = BUTTON_INPUT_Pin;
@@ -821,19 +835,64 @@ static void MX_GPIO_Init(void)
 		 }
 	 }
 
+	 void stateMachineDecider(){
+		 // Go to State B if it is State A
+		 if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin) && stateTracker == 1){
+
+			 // Debug message
+			 sprintf(msg, "Going to State B.\n\r");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+			 // Go to State B
+			 stateTracker = 2;
+
+
+		 // Go to State A if it is State B
+		 } else if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin) && stateTracker == 2){
+
+			 // Debug message
+			 sprintf(msg, "Going to State A.\n\r");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+			 // Stay in State A
+			 stateTracker = 1;
+
+		// Button 2 pressed (State C)
+		 } else if (!HAL_GPIO_ReadPin(BUTTON_INPUT_2_GPIO_Port, BUTTON_INPUT_2_Pin) && stateTracker == 1){
+
+			 // Debug message
+			 sprintf(msg, "Going to State C.\n\r");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+			 // Go to State C
+			 stateTracker = 3;
+		 }
+	 }
+
 	 /* State Handler A */
 	 // Description:
 	 //  Input:
 	 // Output:	State variable
 	 int stateHandlerA(void){
 		 // Push Button 2 Control
+		 if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin)){
+			 sprintf(msg, "Button 1 pressed.\n\r");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+			 // Go to state B
+		 } else {
+			 sprintf(msg, "No input.\n\r");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+		 }
 
 		 // Push Button 1 Control
+		 	 //if pushbutton 1 is pressed
+		 		 	  //go to state C
 
 		 // LCD Control
-
+		 	 //updated
 		 // UART Control
-
+		 	 //utilised
 		 // LED 4 Control
 
 		 // Potentiometer Control
@@ -857,14 +916,17 @@ static void MX_GPIO_Init(void)
 		 // Push Button 2 Control
 
 		 // Push Button 1 Control
-
+		 	 // toggle whether led1 or led2 are blinking 1hz
 		 // LCD Control
+		 	 //Updated with Adc value
 
 		 // UART Control
+		 	 //Disabled
 
 		 // LED 4 Control
 
 		 // Potentiometer Control
+		 	 // change the blinking freq of led 3 & servo
 
 		 // LED 1 Control
 
@@ -889,7 +951,9 @@ static void MX_GPIO_Init(void)
 		 // LCD Control
 
 		 // UART Control
-
+		 	 // reconfigure the UART TX pin using registers to a general output pin
+		 	 // UART TX pin 3 times at 1hz.
+		 	 // after flashing led, the uart tx pin is reconfigured to enable UART communication.
 		 // LED 4 Control
 
 		 // Potentiometer Control
@@ -899,6 +963,8 @@ static void MX_GPIO_Init(void)
 		 // LED 2 Control
 
 		 // LED 3 Control
+
+		//Return to State A
 
 	 }
 
