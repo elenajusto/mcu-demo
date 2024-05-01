@@ -5637,29 +5637,29 @@ LOAD C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x000000000001aefd       0x3a ./ECUAL/I2C_LCD/I2C_LCD.o
  .debug_macro   0x000000000001af37      0x242 ./ECUAL/I2C_LCD/I2C_LCD_cfg.o
 
-.debug_line     0x0000000000000000    0x19f0f
- .debug_line    0x0000000000000000      0xfc7 ./Core/Src/main.o
- .debug_line    0x0000000000000fc7      0xa09 ./Core/Src/stm32g0xx_hal_msp.o
- .debug_line    0x00000000000019d0      0x8e6 ./Core/Src/stm32g0xx_it.o
- .debug_line    0x00000000000022b6      0x583 ./Core/Src/sysmem.o
- .debug_line    0x0000000000002839      0x87c ./Core/Src/system_stm32g0xx.o
- .debug_line    0x00000000000030b5       0x7b ./Core/Startup/startup_stm32g071rbtx.o
- .debug_line    0x0000000000003130      0xbb2 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal.o
- .debug_line    0x0000000000003ce2     0x19e2 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc.o
- .debug_line    0x00000000000056c4      0xc61 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_cortex.o
- .debug_line    0x0000000000006325      0xe53 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma.o
- .debug_line    0x0000000000007178      0xc1f ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_gpio.o
- .debug_line    0x0000000000007d97     0x3a4e ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c.o
- .debug_line    0x000000000000b7e5      0xa27 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c_ex.o
- .debug_line    0x000000000000c20c      0xb8f ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr_ex.o
- .debug_line    0x000000000000cd9b      0xff3 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc.o
- .debug_line    0x000000000000dd8e      0xdee ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.o
- .debug_line    0x000000000000eb7c     0x3d8d ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim.o
- .debug_line    0x0000000000012909     0x1d41 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim_ex.o
- .debug_line    0x000000000001464a     0x3654 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart.o
- .debug_line    0x0000000000017c9e      0xeb9 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.o
- .debug_line    0x0000000000018b57      0xbaa ./ECUAL/I2C_LCD/I2C_LCD.o
- .debug_line    0x0000000000019701      0x80e ./ECUAL/I2C_LCD/I2C_LCD_cfg.o
+.debug_line     0x0000000000000000    0x19f11
+ .debug_line    0x0000000000000000      0xfc9 ./Core/Src/main.o
+ .debug_line    0x0000000000000fc9      0xa09 ./Core/Src/stm32g0xx_hal_msp.o
+ .debug_line    0x00000000000019d2      0x8e6 ./Core/Src/stm32g0xx_it.o
+ .debug_line    0x00000000000022b8      0x583 ./Core/Src/sysmem.o
+ .debug_line    0x000000000000283b      0x87c ./Core/Src/system_stm32g0xx.o
+ .debug_line    0x00000000000030b7       0x7b ./Core/Startup/startup_stm32g071rbtx.o
+ .debug_line    0x0000000000003132      0xbb2 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal.o
+ .debug_line    0x0000000000003ce4     0x19e2 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc.o
+ .debug_line    0x00000000000056c6      0xc61 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_cortex.o
+ .debug_line    0x0000000000006327      0xe53 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma.o
+ .debug_line    0x000000000000717a      0xc1f ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_gpio.o
+ .debug_line    0x0000000000007d99     0x3a4e ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c.o
+ .debug_line    0x000000000000b7e7      0xa27 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c_ex.o
+ .debug_line    0x000000000000c20e      0xb8f ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr_ex.o
+ .debug_line    0x000000000000cd9d      0xff3 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc.o
+ .debug_line    0x000000000000dd90      0xdee ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.o
+ .debug_line    0x000000000000eb7e     0x3d8d ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim.o
+ .debug_line    0x000000000001290b     0x1d41 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim_ex.o
+ .debug_line    0x000000000001464c     0x3654 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart.o
+ .debug_line    0x0000000000017ca0      0xeb9 ./Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.o
+ .debug_line    0x0000000000018b59      0xbaa ./ECUAL/I2C_LCD/I2C_LCD.o
+ .debug_line    0x0000000000019703      0x80e ./ECUAL/I2C_LCD/I2C_LCD_cfg.o
 
 .debug_str      0x0000000000000000    0xaee9f
  .debug_str     0x0000000000000000    0xa933b ./Core/Src/main.o

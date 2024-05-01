@@ -888,6 +888,19 @@ static void MX_GPIO_Init(void)
 		 int servoAngle = myMap(getAdcFromPot(), 60, 4095, 0, 180);
 		 motorControl(servoAngle);
 
+		 // LED3 control
+		 // servoAngle also mapped to LED3 frequency (PSC)
+		 // adc towards 0v = 5hz
+		 // adc towards 5v = 1hz
+
+		 // LED1 Toggle
+		 // B1 pressed = Turn off
+		 // B1 not pressed = Turn on
+
+		 // LED2 Toggle
+		 // B1 pressed = Turn on
+		 // B1 not pressed = Turn off
+
 		 // No button pushes - Stay in State B
 		 stateTracker = 2;
 	 }
