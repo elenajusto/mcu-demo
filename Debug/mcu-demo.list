@@ -2626,6 +2626,9 @@ static void MX_GPIO_Init(void)
  80010de:	0019      	movs	r1, r3
  80010e0:	2000      	movs	r0, #0
  80010e2:	f006 f84d 	bl	8007180 <I2C_LCD_WriteString>
+		 // Check UART Rx
+		 // If "j" sent via UART, turn off UART transmissions
+		 // else continue
 
 		 // Get potentiometer value
 		 HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle

@@ -21,7 +21,7 @@
 ../Core/Src/main.c:773:8:stateMachineController	16	static
 ../Core/Src/main.c:811:8:stateMachineDecider	8	static
 ../Core/Src/main.c:851:8:stateHandlerA	24	static
-../Core/Src/main.c:872:8:stateHandlerB	24	static
-../Core/Src/main.c:909:8:stateHandlerC	8	static
-../Core/Src/main.c:926:8:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:957:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:876:8:stateHandlerB	24	static
+../Core/Src/main.c:913:8:stateHandlerC	8	static
+../Core/Src/main.c:930:8:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:961:6:Error_Handler	8	static,ignoring_inline_asm

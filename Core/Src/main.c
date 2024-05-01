@@ -856,6 +856,10 @@ static void MX_GPIO_Init(void)
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
 		 I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
 
+		 // Check UART Rx
+		 // If "j" sent via UART, turn off UART transmissions
+		 // else continue
+
 		 // Get potentiometer value
 		 HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
 		 getPotValue();
