@@ -50,6 +50,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim7;
+TIM_HandleTypeDef htim14;
 
 UART_HandleTypeDef huart2;
 
@@ -86,6 +87,7 @@ static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
+static void MX_TIM14_Init(void);
 /* USER CODE BEGIN PFP */
 
 // Test functions
@@ -159,6 +161,7 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
+  MX_TIM14_Init();
   /* USER CODE BEGIN 2 */
 
   // Enable the TIM2 peripheral
@@ -170,6 +173,9 @@ int main(void)
   // Enable the TIM7 peripheral
   __HAL_RCC_TIM7_CLK_ENABLE();
 
+  // Enable the TIM14 peripheral
+   __HAL_RCC_TIM14_CLK_ENABLE();
+
   // Enable the peripheral IRQ for TIM2
   HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(TIM2_IRQn);
@@ -178,15 +184,19 @@ int main(void)
   HAL_NVIC_SetPriority(TIM6_DAC_LPTIM1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(TIM6_DAC_LPTIM1_IRQn);
 
-
   // Enable the peripheral IRQ for TIM7
   HAL_NVIC_SetPriority(TIM7_LPTIM2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(TIM7_LPTIM2_IRQn);
+
+  // Enable the peripheral IRQ for TIM14
+  HAL_NVIC_SetPriority(TIM14_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(TIM14_IRQn);
 
   // Start the timers
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start_IT(&htim7);
+  HAL_TIM_Base_Start_IT(&htim14);
 
   // Enable PWM on TIM3 (for motor control)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
@@ -215,22 +225,21 @@ int main(void)
 	  //HAL_UART_Receive_IT(&huart2, 1, 1);
 
 	  // Get potentiometer value
-	  //HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
-	  //hardwareTestPot();
+	  HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
+	  hardwareTestPot();
 
 	  // Motor control
-	  //adcValue = getAdcFromPot();
-	  //servoAngle = myMap(adcValue, 60, 4095, 0, 180);
-	  //motorControl(servoAngle);
+	  adcValue = getAdcFromPot();
+	  servoAngle = myMap(adcValue, 60, 4095, 0, 180);
+	  motorControl(servoAngle);
 
 	 // Debug message
-	 sprintf(msg, "Current State: %hu\n\r", stateTracker);
-	 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+	 //sprintf(msg, "Current State: %hu\n\r", stateTracker);
+	 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 	 // State decider
-	 stateMachineDecider();
-
-	 HAL_Delay(500);
+	 //stateMachineDecider();
+	 //stateMachineController(stateTracker);
 
     /* USER CODE END WHILE */
 
@@ -570,6 +579,37 @@ static void MX_TIM7_Init(void)
 }
 
 /**
+  * @brief TIM14 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM14_Init(void)
+{
+
+  /* USER CODE BEGIN TIM14_Init 0 */
+
+  /* USER CODE END TIM14_Init 0 */
+
+  /* USER CODE BEGIN TIM14_Init 1 */
+
+  /* USER CODE END TIM14_Init 1 */
+  htim14.Instance = TIM14;
+  htim14.Init.Prescaler = 997;
+  htim14.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim14.Init.Period = 999;
+  htim14.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim14.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim14) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM14_Init 2 */
+
+  /* USER CODE END TIM14_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -706,16 +746,15 @@ static void MX_GPIO_Init(void)
 	void hardwareTestPot(void){
 
 		/* Init variable for pot value */
-		char msg[20];
-		uint16_t potValue;
+		//uint16_t potValue;
 
 		/* Get pot value */
 		HAL_ADC_PollForConversion(&hadc1, 5);
 		potValue = HAL_ADC_GetValue(&hadc1);
 
 		/* Print value */
-		sprintf(msg, "potValue: %hu\r\n", potValue);
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+		//sprintf(msg, "potValue: %hu\r\n", potValue);
+		//HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 	}
 
@@ -814,22 +853,36 @@ static void MX_GPIO_Init(void)
 	 //  Input:		 Integer corresponding to state (1 = A, 2 = B, 3 = C)
 	 // Output:		 None
 	 void stateMachineController(int state){
-		 int stateTracker = state;
 
-		 switch(stateTracker){
+		 switch(state){
 
 		 	 // State A
 			 case 1:
+
+				 // Debug message
+				 sprintf(msg, "Executing A.\n\r");
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
 				 stateHandlerA();
 				 break;
 
 			 // State B
 			 case 2:
+
+				 // Debug message
+				 sprintf(msg, "Executing B.\n\r");
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
 				 stateHandlerB();
 				 break;
 
 			// State C
 			 case 3:
+
+				 // Debug message
+				 sprintf(msg, "Executing C.\n\r");
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
 				 stateHandlerC();
 				 break;
 		 }
@@ -874,28 +927,26 @@ static void MX_GPIO_Init(void)
 	 //  Input:
 	 // Output:	State variable
 	 int stateHandlerA(void){
-		 // Push Button 2 Control
-		 if (HAL_GPIO_ReadPin(BUTTON_INPUT_GPIO_Port, BUTTON_INPUT_Pin)){
-			 sprintf(msg, "Button 1 pressed.\n\r");
-			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-			 // Go to state B
-		 } else {
-			 sprintf(msg, "No input.\n\r");
-			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-		 }
-
-		 // Push Button 1 Control
-		 	 //if pushbutton 1 is pressed
-		 		 	  //go to state C
 
 		 // LCD Control
-		 	 //updated
+		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
+		 I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
+		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
+		 I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
+
 		 // UART Control
-		 	 //utilised
+		 //uint16_t potValue;
+
+		 //HAL_ADC_PollForConversion(&hadc1, 5);	// Trigger ADC peripheral
+		 //potValue = HAL_ADC_GetValue(&hadc1);	// Get pot value
+
+		 //sprintf(msg, "Autumn 2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
+		 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
 		 // LED 4 Control
 
-		 // Potentiometer Control
+		 // Motor Control
+		 motorControl(myMap(potValue, 60, 4095, 0, 180));
 
 		 // LED 1 Control
 
@@ -913,10 +964,9 @@ static void MX_GPIO_Init(void)
 	 // Output:
 	 int stateHandlerB(void){
 
-		 // Push Button 2 Control
-
 		 // Push Button 1 Control
 		 	 // toggle whether led1 or led2 are blinking 1hz
+
 		 // LCD Control
 		 	 //Updated with Adc value
 
@@ -954,6 +1004,7 @@ static void MX_GPIO_Init(void)
 		 	 // reconfigure the UART TX pin using registers to a general output pin
 		 	 // UART TX pin 3 times at 1hz.
 		 	 // after flashing led, the uart tx pin is reconfigured to enable UART communication.
+
 		 // LED 4 Control
 
 		 // Potentiometer Control
@@ -1018,13 +1069,22 @@ static void MX_GPIO_Init(void)
 	 //  Input:
 	 // Output:
 	 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+
 		 // This callback is automatically called by the HAL on the UEV event
 		 if(htim->Instance == TIM2){
 			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+
 		 } else if(htim->Instance == TIM6){
 			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
+
 		 } else if(htim->Instance == TIM7){
 			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
+
+		 } else if(htim->Instance == TIM14){
+			 if (stateTracker == 1){
+				 sprintf(msg, "2 Hz UART %hu\r\n", potValue);
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+			 }
 		 }
 	 }
 
