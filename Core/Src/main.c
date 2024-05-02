@@ -62,6 +62,9 @@ char msg2[60];				// UART Message Buffer 2
 char msgRx[5] = {0};		// UART receive message buffer
 uint16_t potValue;
 int uartFlag = 1;			// 1 = Input received
+int ledOneFlag = 1;			// 1 = On
+int ledTwoFlag = 1;			// 1 = On
+int buttonTwoFlag = 1;		// 1 = On
 int stateTracker;			// 1 = A, 2 = B, 3 = C
 
 /* USER CODE END PV */
@@ -193,8 +196,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  // Check UART Rx
-	  // If "j" sent via UART, turn off UART transmissions
+	  // Check UART Transmissions
 	  HAL_UART_Receive_IT(&huart2, msgRx, 1);
 
 	  // Get potentiometer value
@@ -204,6 +206,13 @@ int main(void)
 	  // State Machine
 	  stateMachineDecider();
 	  stateMachineController(stateTracker);
+
+	  // Monitor LEDs
+	  if (ledOneFlag == 0 ){
+		  HAL_GPIO_WritePin(LED_1_GPIO_Port,LED_1_Pin,GPIO_PIN_RESET);
+	  } else if (ledTwoFlag == 0){
+		  HAL_GPIO_WritePin(LED_2_GPIO_Port,LED_2_Pin,GPIO_PIN_RESET);
+	  }
 
     /* USER CODE END WHILE */
 
@@ -768,6 +777,10 @@ static void MX_GPIO_Init(void)
 				 //sprintf(msg, "Executing A.\n\r");
 				 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
+				 // LEDs go back to normal when not in State B
+				 ledOneFlag = 1;
+				 ledTwoFlag = 1;
+
 				 stateHandlerA();
 				 break;
 
@@ -787,6 +800,10 @@ static void MX_GPIO_Init(void)
 				 // Debug message
 				 sprintf(msg, "Executing C.\n\r");
 				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+				 // LEDs go back to normal when not in State B
+				 ledOneFlag = 1;
+				 ledTwoFlag = 1;
 
 				 stateHandlerC();
 				 break;
@@ -857,6 +874,12 @@ static void MX_GPIO_Init(void)
 	 /* State Handler B */
 	 void stateHandlerB(void){
 
+		 // State B is initially called
+		 if (ledOneFlag == 1 && ledTwoFlag == 1){
+			 ledOneFlag = 1;
+			 ledTwoFlag = 0;
+		 }
+
 		 // LCD Control
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
 		 I2C_LCD_WriteString(MyI2C_LCD, "ADC: ");
@@ -879,13 +902,22 @@ static void MX_GPIO_Init(void)
 		 // adc towards 0v = 5hz
 		 // adc towards 5v = 1hz
 
-		 // LED1 Toggle
+		 // LED1 and LED2 toggle
 		 // B1 pressed = Turn off
 		 // B1 not pressed = Turn on, blink at 1 Hz (Modify PSC)
+		 if (!HAL_GPIO_ReadPin(BUTTON_INPUT_2_GPIO_Port, BUTTON_INPUT_2_Pin)){
 
-		 // LED2 Toggle
-		 // B1 pressed = Turn on, blink at 1 Hz (Modify PSC)
-		 // B1 not pressed = Turn off
+			 // If LED1 is on, swap with LED2
+			 if (ledOneFlag == 1){
+				 ledOneFlag = 0;
+				 ledTwoFlag = 1;
+
+			// If LED2 is on, swap with LED1
+			 } else if (ledTwoFlag == 1){
+				 ledTwoFlag = 0;
+				 ledOneFlag = 1;
+			 }
+		 }
 
 		 // No button pushes - Stay in State B
 		 stateTracker = 2;
@@ -913,11 +945,15 @@ static void MX_GPIO_Init(void)
 
 		 // TIM2 controls LED1
 		 if(htim->Instance == TIM2){
-			 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+			 if (ledOneFlag == 1){
+				 HAL_GPIO_TogglePin(LED_1_GPIO_Port, LED_1_Pin);
+			 }
 
 		 // TIM6 controls LED2
 		 } else if(htim->Instance == TIM6){
-			 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
+			 if (ledTwoFlag == 1) {
+				 HAL_GPIO_TogglePin(LED_2_GPIO_Port, LED_2_Pin);
+			 }
 
 		 // TIM7 controls LED3
 		 } else if(htim->Instance == TIM7){
