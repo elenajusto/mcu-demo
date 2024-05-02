@@ -59,8 +59,9 @@ UART_HandleTypeDef huart2;
 // Global Variables
 char msg[23];				// UART Message Buffer 1
 char msg2[60];				// UART Message Buffer 2
+char msgRx[1];				// Uart receive message buffer
 uint16_t potValue;
-
+int uartFlag = 1;			// 1 = Input received
 int stateTracker;			// 1 = A, 2 = B, 3 = C
 
 /* USER CODE END PV */
@@ -192,6 +193,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // Check UART Rx
+	  // If "j" sent via UART, turn off UART transmissions
+	  HAL_UART_Receive_IT(&huart2, 1, 1);
+
 	  // Get potentiometer value
 	  HAL_ADC_Start_IT(&hadc1);
 	  getPotValue();
@@ -742,29 +747,11 @@ static void MX_GPIO_Init(void)
 	/* Motor control */
 	void motorControl(int adcValue){
 		__HAL_TIM_SET_COMPARE (&htim3, TIM_CHANNEL_1, adcValue); // Interpolate pot values to PWM range
-
 	}
 
 	/* Mapping function */
 	 int myMap(int x, int in_min, int in_max, int out_min, int out_max){
 		 return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-	 }
-
-	 /* UART Receive Function */
-	 // Triggers interrupt when UART receives bytes
-	 void uartReceive(void){
-		 HAL_UART_Receive_IT(&huart2, 20, 20);
-	 }
-
-	 /* UART Receive Interrupt Handler */
-	 // Handles receiving of bytes
-	 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-		 UNUSED(huart);
-
-		 /* Test message to confirm receiving works */
-		 char msg[20];
-		 sprintf(msg, "Message received\n\r");
-		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 	 }
 
 	 /* State Machine Controller */
@@ -849,16 +836,11 @@ static void MX_GPIO_Init(void)
 
 	 /* State Handler A */
 	 void stateHandlerA(void){
-
 		 // LCD Control
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
 		 I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
 		 I2C_LCD_WriteString(MyI2C_LCD, "Mechatronics 1");
-
-		 // Check UART Rx
-		 // If "j" sent via UART, turn off UART transmissions
-		 // else continue
 
 		 // Get potentiometer value
 		 HAL_ADC_Start_IT(&hadc1);	// Start conversion after each ADC cycle
@@ -944,11 +926,35 @@ static void MX_GPIO_Init(void)
 	     // TIM14 controls UART
 		 } else if(htim->Instance == TIM14){
 			 if (stateTracker == 1){
-				 sprintf(msg2, "Autumn2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
-				 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
+				 if (uartFlag == 1){
+					 sprintf(msg2, "Autumn2024 MX1 SID: 24429298, ADC Reading: %hu\r\n", potValue);
+					 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
+				 }
 			 } else if (stateTracker == 2){
 				 ; // UART do nothing
 			 }
+		 }
+	 }
+
+	 /* UART Receive Interrupt Handler */
+	 // Handles receiving of bytes
+	 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+
+		 if (stateTracker == 1){
+
+			if (uartFlag == 0){
+				sprintf(msg, "Turning ON UART.\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+				uartFlag = 1;
+			} else if (uartFlag == 1) {
+				sprintf(msg, "Turning OFF UART.\r\n");
+				HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+				uartFlag = 0;
+			}
+
+		 } else {
+			 sprintf(msg, "Cannot disable, not in State A.\r\n");
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		 }
 	 }
 
