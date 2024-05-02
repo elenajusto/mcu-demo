@@ -23,4 +23,4 @@
 ../Core/Src/main.c:895:8:stateHandlerC	8	static
 ../Core/Src/main.c:912:8:HAL_TIM_PeriodElapsedCallback	16	static
 ../Core/Src/main.c:941:8:HAL_UART_RxCpltCallback	16	static
-../Core/Src/main.c:967:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:976:6:Error_Handler	8	static,ignoring_inline_asm

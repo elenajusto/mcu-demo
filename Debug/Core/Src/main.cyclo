@@ -22,5 +22,5 @@
 ../Core/Src/main.c:858:8:stateHandlerB	1
 ../Core/Src/main.c:895:8:stateHandlerC	1
 ../Core/Src/main.c:912:8:HAL_TIM_PeriodElapsedCallback	7
-../Core/Src/main.c:941:8:HAL_UART_RxCpltCallback	4
-../Core/Src/main.c:967:6:Error_Handler	1
+../Core/Src/main.c:941:8:HAL_UART_RxCpltCallback	5
+../Core/Src/main.c:976:6:Error_Handler	1

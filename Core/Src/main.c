@@ -59,7 +59,7 @@ UART_HandleTypeDef huart2;
 // Global Variables
 char msg[23];				// UART Message Buffer 1
 char msg2[60];				// UART Message Buffer 2
-char msgRx[1];				// Uart receive message buffer
+char msgRx[5] = {0};		// UART receive message buffer
 uint16_t potValue;
 int uartFlag = 1;			// 1 = Input received
 int stateTracker;			// 1 = A, 2 = B, 3 = C
@@ -195,7 +195,7 @@ int main(void)
   {
 	  // Check UART Rx
 	  // If "j" sent via UART, turn off UART transmissions
-	  HAL_UART_Receive_IT(&huart2, 1, 1);
+	  HAL_UART_Receive_IT(&huart2, msgRx, 1);
 
 	  // Get potentiometer value
 	  HAL_ADC_Start_IT(&hadc1);
@@ -940,20 +940,29 @@ static void MX_GPIO_Init(void)
 	 // Handles receiving of bytes
 	 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
-		 if (stateTracker == 1){
+		 sprintf(msg, "Value Received: %s\r\n", msgRx);
+		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-			if (uartFlag == 0){
-				sprintf(msg, "Turning ON UART.\r\n");
-				HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-				uartFlag = 1;
-			} else if (uartFlag == 1) {
-				sprintf(msg, "Turning OFF UART.\r\n");
-				HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-				uartFlag = 0;
-			}
+		 if (strcmp(msgRx,"j") == 0) {
+			 if (stateTracker == 1){
 
+				if (uartFlag == 0){
+					sprintf(msg, "Turning ON UART.\r\n");
+					HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+					uartFlag = 1;
+
+				} else if (uartFlag == 1) {
+					sprintf(msg, "Turning OFF UART.\r\n");
+					HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+					uartFlag = 0;
+				}
+
+			 } else {
+				 sprintf(msg, "Cannot disable, not in State A.\r\n");
+				 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+			 }
 		 } else {
-			 sprintf(msg, "Cannot disable, not in State A.\r\n");
+			 sprintf(msg, "Incorrect key.\r\n");
 			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		 }
 	 }
