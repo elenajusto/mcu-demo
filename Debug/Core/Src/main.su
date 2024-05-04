@@ -19,8 +19,8 @@
 ../Core/Src/main.c:769:8:stateMachineController	16	static
 ../Core/Src/main.c:815:8:stateMachineDecider	8	static
 ../Core/Src/main.c:855:8:stateHandlerA	24	static
-../Core/Src/main.c:875:8:stateHandlerB	24	static
-../Core/Src/main.c:927:8:stateHandlerC	8	static
-../Core/Src/main.c:944:8:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:977:8:HAL_UART_RxCpltCallback	16	static
-../Core/Src/main.c:1012:6:Error_Handler	8	static,ignoring_inline_asm
+../Core/Src/main.c:876:8:stateHandlerB	24	static
+../Core/Src/main.c:929:8:stateHandlerC	8	static
+../Core/Src/main.c:949:8:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:982:8:HAL_UART_RxCpltCallback	16	static
+../Core/Src/main.c:1017:6:Error_Handler	8	static,ignoring_inline_asm

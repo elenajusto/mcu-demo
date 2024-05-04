@@ -19,8 +19,8 @@
 ../Core/Src/main.c:769:8:stateMachineController	5
 ../Core/Src/main.c:815:8:stateMachineDecider	7
 ../Core/Src/main.c:855:8:stateHandlerA	1
-../Core/Src/main.c:875:8:stateHandlerB	6
-../Core/Src/main.c:927:8:stateHandlerC	1
-../Core/Src/main.c:944:8:HAL_TIM_PeriodElapsedCallback	9
-../Core/Src/main.c:977:8:HAL_UART_RxCpltCallback	5
-../Core/Src/main.c:1012:6:Error_Handler	1
+../Core/Src/main.c:876:8:stateHandlerB	6
+../Core/Src/main.c:929:8:stateHandlerC	1
+../Core/Src/main.c:949:8:HAL_TIM_PeriodElapsedCallback	9
+../Core/Src/main.c:982:8:HAL_UART_RxCpltCallback	5
+../Core/Src/main.c:1017:6:Error_Handler	1

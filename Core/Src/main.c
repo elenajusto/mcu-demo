@@ -854,6 +854,7 @@ static void MX_GPIO_Init(void)
 	 /* State Handler A */
 	 void stateHandlerA(void){
 		 // LCD Control
+		 I2C_LCD_Display(MyI2C_LCD);
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
 		 I2C_LCD_WriteString(MyI2C_LCD, "SID: 24429298");
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 1);
@@ -874,13 +875,14 @@ static void MX_GPIO_Init(void)
 	 /* State Handler B */
 	 void stateHandlerB(void){
 
-		 // State B is initially called
+		 // When State B is initially called, let alone one of the LEDs (in question) on
 		 if (ledOneFlag == 1 && ledTwoFlag == 1){
 			 ledOneFlag = 1;
 			 ledTwoFlag = 0;
 		 }
 
 		 // LCD Control
+		 I2C_LCD_Display(MyI2C_LCD);
 		 I2C_LCD_SetCursor(MyI2C_LCD, 0, 0);
 		 I2C_LCD_WriteString(MyI2C_LCD, "ADC: ");
 		 sprintf(msg2, "%hu", potValue);
@@ -925,6 +927,9 @@ static void MX_GPIO_Init(void)
 
 	 /* State Handler C */
 	 void stateHandlerC(void){
+
+		 // Turn off LCD
+		 I2C_LCD_NoDisplay(MyI2C_LCD);
 
 		 // Test function to show State C. State C functionality yet to be added.
 		 HAL_Delay(2000);
