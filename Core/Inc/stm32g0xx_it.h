@@ -55,6 +55,7 @@ void TIM2_IRQHandler(void);
 void TIM6_DAC_LPTIM1_IRQHandler(void);
 void TIM7_LPTIM2_IRQHandler(void);
 void TIM14_IRQHandler(void);
+void TIM17_IRQHandler(void);
 void USART2_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 

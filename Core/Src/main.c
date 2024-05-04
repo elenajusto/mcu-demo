@@ -51,6 +51,7 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim7;
 TIM_HandleTypeDef htim14;
+TIM_HandleTypeDef htim17;
 
 UART_HandleTypeDef huart2;
 
@@ -67,6 +68,9 @@ int ledTwoFlag = 1;			// 1 = On
 int buttonTwoFlag = 1;		// 1 = On
 int stateTracker;			// 1 = A, 2 = B, 3 = C
 
+uint16_t millisProgStart;	// Stores milliseconds since program started
+uint16_t millisValue;		// Stores milliseconds
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,6 +84,7 @@ static void MX_TIM3_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_TIM14_Init(void);
+static void MX_TIM17_Init(void);
 /* USER CODE BEGIN PFP */
 
 // Test functions
@@ -143,6 +148,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM7_Init();
   MX_TIM14_Init();
+  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
 
   // Enable the TIM2 peripheral
@@ -156,6 +162,9 @@ int main(void)
 
   // Enable the TIM14 peripheral
    __HAL_RCC_TIM14_CLK_ENABLE();
+
+   // Enable the TIM17 peripheral
+    __HAL_RCC_TIM17_CLK_ENABLE();
 
   // Enable the peripheral IRQ for TIM2
   HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
@@ -173,11 +182,16 @@ int main(void)
   HAL_NVIC_SetPriority(TIM14_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(TIM14_IRQn);
 
+  // Enable the peripheral IRQ for TIM17
+  HAL_NVIC_SetPriority(TIM17_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(TIM17_IRQn);
+
   // Start the timers
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start_IT(&htim7);
   HAL_TIM_Base_Start_IT(&htim14);
+  HAL_TIM_Base_Start_IT(&htim17);
 
   // Enable PWM on TIM3 (for motor control)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
@@ -579,6 +593,38 @@ static void MX_TIM14_Init(void)
 }
 
 /**
+  * @brief TIM17 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM17_Init(void)
+{
+
+  /* USER CODE BEGIN TIM17_Init 0 */
+
+  /* USER CODE END TIM17_Init 0 */
+
+  /* USER CODE BEGIN TIM17_Init 1 */
+
+  /* USER CODE END TIM17_Init 1 */
+  htim17.Instance = TIM17;
+  htim17.Init.Prescaler = 0;
+  htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim17.Init.Period = 999;
+  htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim17.Init.RepetitionCounter = 0;
+  htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM17_Init 2 */
+
+  /* USER CODE END TIM17_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -909,6 +955,10 @@ static void MX_GPIO_Init(void)
 		 // B1 not pressed = Turn on, blink at 1 Hz (Modify PSC)
 		 if (!HAL_GPIO_ReadPin(BUTTON_INPUT_2_GPIO_Port, BUTTON_INPUT_2_Pin)){
 
+			 // Testing millis - time since program start
+			 sprintf(msg2, "Time since program start (ms): %u\r\n", millisProgStart);
+			 HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2), HAL_MAX_DELAY);
+
 			 // If LED1 is on, swap with LED2
 			 if (ledOneFlag == 1){
 				 ledOneFlag = 0;
@@ -931,14 +981,30 @@ static void MX_GPIO_Init(void)
 		 // Turn off LCD
 		 I2C_LCD_NoDisplay(MyI2C_LCD);
 
-		 // Test function to show State C. State C functionality yet to be added.
-		 HAL_Delay(2000);
+		 // Debug Message
+		 sprintf(msg, "State C.\n\r");
+		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-		 // Reconfigure UART Tx Pin (PA2)
-		 // Turn into GPIO (output)
-		 // Set pin to toggle output based on TIM with frequency 1 Hz
+		 // Test function to show State C. State C functionality yet to be added.
+		 HAL_Delay(3000);
+
+		 // Turn off UART
+		 //HAL_UART_DeInit(&huart2);
+
+		 // Configure GPIO pin : PA2 (UART TX) to GPIO
+		 //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET); // Configure GPIO pin Output Level
+		 //GPIO_InitStruct.Pin = GPIO_PIN_2;
+		 //GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		 //GPIO_InitStruct.Pull = GPIO_NOPULL;
+		 //GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+		 //HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+		 // Set pin to toggle output based on TIM with frequency 1 Hz (turn on TIM)
+
 		 // Cycle for 3 seconds
-		 // Turn back into UART (tx)
+
+		 // Turn back into UART (Tx)
+		 //MX_USART2_UART_Init();
 
 		 // Return to State A
 		 stateTracker = 1;
@@ -974,6 +1040,10 @@ static void MX_GPIO_Init(void)
 			 } else if (stateTracker == 2){
 				 ; // UART do nothing
 			 }
+		 }
+		 // TIM17 counts up to 1 ms
+		 else if(htim->Instance == TIM17){
+			 millisProgStart+=1;
 		 }
 	 }
 
