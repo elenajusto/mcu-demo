@@ -405,7 +405,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 999;
+  htim2.Init.Prescaler = 15999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -508,7 +508,7 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 999;
+  htim6.Init.Prescaler = 15999;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim6.Init.Period = 999;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -546,7 +546,7 @@ static void MX_TIM7_Init(void)
 
   /* USER CODE END TIM7_Init 1 */
   htim7.Instance = TIM7;
-  htim7.Init.Prescaler = 999;
+  htim7.Init.Prescaler = 15999;
   htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim7.Init.Period = 999;
   htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -856,6 +856,14 @@ static void MX_GPIO_Init(void)
 				 ledTwoFlag = 1;
 				 ledThreeFlag = 1;
 
+				 // Timers go back to normal
+				 HAL_TIM_Base_Stop(&htim2);
+				 HAL_TIM_Base_Stop(&htim6);
+				 HAL_TIM_Base_Stop(&htim7);
+				 MX_TIM2_Init();
+				 MX_TIM6_Init();
+				 MX_TIM7_Init();
+
 				 stateHandlerA();
 				 break;
 
@@ -883,6 +891,14 @@ static void MX_GPIO_Init(void)
 				 ledOneFlag = 1;
 				 ledTwoFlag = 1;
 				 ledThreeFlag = 1;
+
+				 // Timers go back to normal
+				 HAL_TIM_Base_Stop(&htim2);
+				 HAL_TIM_Base_Stop(&htim6);
+				 HAL_TIM_Base_Stop(&htim7);
+				 MX_TIM2_Init();
+				 MX_TIM6_Init();
+				 MX_TIM7_Init();
 
 				 stateHandlerC();
 				 break;
@@ -979,7 +995,7 @@ static void MX_GPIO_Init(void)
 		 motorControl(servoAngle);
 
 		 // LED frequency control
-		 int blinkSpeed = myMap(getAdcFromPot(), 60, 4095, 16000, 0.244140625);
+		 int blinkSpeed = myMap(getAdcFromPot(), 60, 4095, 1000, 62.5);
 		 ledFreqControl(blinkSpeed);
 
 		 // LED1 and LED2 toggle
