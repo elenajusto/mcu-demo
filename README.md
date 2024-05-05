@@ -12,11 +12,12 @@
 
 
 ## State Handler Module
-![MCU-Group-Demo-Architecture 3 - State Control drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/5fc9f275-39f9-40e6-b652-33c052003c1c)
+![MCU-Group-Demo-Architecture 3 - State Control drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/60157b44-879b-406e-8bfb-65f5e9b5a469)
 
 
 ## State Machine
-![State Machine](https://github.com/elenajusto/mcu-demo/assets/56148816/bc7a7bfa-aca1-4d64-8d06-8d94e2c41ea1)
+![MCU-Group-Demo-States drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/d1acd5dd-626f-4297-950c-436fec44f812)
+
 
 ## Wiring Schematic
 ![Wiring Schematic](https://github.com/elenajusto/mcu-demo/assets/56148816/2bba21d7-d610-4990-b572-d0695891662e)
