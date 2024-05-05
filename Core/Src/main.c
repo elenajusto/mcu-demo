@@ -816,18 +816,15 @@ static void MX_GPIO_Init(void)
 		uint16_t prescaler = adcValue;
 
 		// Stop the Timer
-		HAL_TIM_Base_Stop(&htim2);
-		HAL_TIM_Base_Stop(&htim6);
+
 		HAL_TIM_Base_Stop(&htim7);
 
 		// Update Prescaler
-		htim2.Instance->PSC = prescaler;
-		htim6.Instance->PSC = prescaler;
+
 		htim7.Instance->PSC = prescaler;
 
 		// Restart Timer
-		HAL_TIM_Base_Start(&htim2);
-		HAL_TIM_Base_Start(&htim6);
+
 		HAL_TIM_Base_Start(&htim7);
 	}
 
@@ -857,11 +854,7 @@ static void MX_GPIO_Init(void)
 				 ledThreeFlag = 1;
 
 				 // Timers go back to normal
-				 HAL_TIM_Base_Stop(&htim2);
-				 HAL_TIM_Base_Stop(&htim6);
 				 HAL_TIM_Base_Stop(&htim7);
-				 MX_TIM2_Init();
-				 MX_TIM6_Init();
 				 MX_TIM7_Init();
 
 				 stateHandlerA();
@@ -893,11 +886,7 @@ static void MX_GPIO_Init(void)
 				 ledThreeFlag = 1;
 
 				 // Timers go back to normal
-				 HAL_TIM_Base_Stop(&htim2);
-				 HAL_TIM_Base_Stop(&htim6);
 				 HAL_TIM_Base_Stop(&htim7);
-				 MX_TIM2_Init();
-				 MX_TIM6_Init();
 				 MX_TIM7_Init();
 
 				 stateHandlerC();
@@ -995,7 +984,7 @@ static void MX_GPIO_Init(void)
 		 motorControl(servoAngle);
 
 		 // LED frequency control
-		 int blinkSpeed = myMap(getAdcFromPot(), 60, 4095, 1000, 62.5);
+		 int blinkSpeed = myMap(getAdcFromPot(), 60, 4095, 16000, 3200);
 		 ledFreqControl(blinkSpeed);
 
 		 // LED1 and LED2 toggle
