@@ -12,7 +12,7 @@
 <h2>Videos</h2>
 
 <h3>Functional Prototype 1</h3>
-!(https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)]([https://www.youtube.com/watch?v=wvXIymuV3WM&list=PLeHPWhhulgORqavIWTeafVYqOML-yfePP&index=1](https://youtu.be/wvXIymuV3WM?si=n4Z34KrZIcj6SD5P))
+[![Functional Prototype 1](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)]([https://www.youtube.com/watch?v=wvXIymuV3WM&list=PLeHPWhhulgORqavIWTeafVYqOML-yfePP&index=1](https://youtu.be/wvXIymuV3WM?si=n4Z34KrZIcj6SD5P))
 
 <h3>Functional Prototype 2</h3>
 https://github.com/elenajusto/mcu-demo/assets/56148816/345f56e9-1fa9-4e9b-9a9f-997f5ba83be1
