@@ -992,21 +992,11 @@ static void MX_GPIO_Init(void)
 		 // Configure GPIO pin : PA2 (UART TX) to GPIO
 		 turnUartIntoGPIO();
 
-		 // Counter
-		 //int millisTimer = 0;
-
-		 // Start millis timer
-		 //HAL_TIM_Base_Start_IT(&htim17);
-
 		 // Set pin to toggle output based on TIM with frequency 1 Hz for 3 seconds
 		 for (int i = 0; i < 6; i++){
 			 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
-			 //millisTimer = millisProgStart;
 			 HAL_Delay(500);	// 500 ms = 1 Hz
 		 }
-
-		 // Turn off millis timer
-		 //HAL_TIM_Base_Stop(&htim17);
 
 		 // De-init GPIO PA2
 		 HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2);
