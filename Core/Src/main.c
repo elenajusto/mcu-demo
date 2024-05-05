@@ -65,6 +65,7 @@ uint16_t potValue;
 int uartFlag = 1;			// 1 = Input received
 int ledOneFlag = 1;			// 1 = On
 int ledTwoFlag = 1;			// 1 = On
+int ledThreeFlag = 1;		// 1 = On
 int buttonTwoFlag = 1;		// 1 = On
 int stateTracker;			// 1 = A, 2 = B, 3 = C
 
@@ -99,6 +100,7 @@ void getPotValue(void);													// ADC Reader - Print value
 int myMap(int x, int in_min, int in_max, int out_min, int out_max);		// Map ADC to PWM
 void motorControl(int adcValue);										// Send PWM to motor
 int getAdcFromPot();													// ADC Reader - Return value
+void ledFreqControl(int adcValue);
 
 // State Functions
 void stateMachineController(int state);									// Executes states
@@ -227,6 +229,8 @@ int main(void)
 		  HAL_GPIO_WritePin(LED_1_GPIO_Port,LED_1_Pin,GPIO_PIN_RESET);
 	  } else if (ledTwoFlag == 0){
 		  HAL_GPIO_WritePin(LED_2_GPIO_Port,LED_2_Pin,GPIO_PIN_RESET);
+	  } else if (ledThreeFlag == 0){
+		  HAL_GPIO_WritePin(LED_3_GPIO_Port,LED_3_Pin,GPIO_PIN_RESET);
 	  }
 
     /* USER CODE END WHILE */
@@ -805,6 +809,29 @@ static void MX_GPIO_Init(void)
 		__HAL_TIM_SET_COMPARE (&htim3, TIM_CHANNEL_1, adcValue); // Interpolate pot values to PWM range
 	}
 
+	/* LED Frequency control */
+	void ledFreqControl(int adcValue){
+
+		// Calculate timer parameters
+		uint16_t prescaler = adcValue;
+
+		// Stop the Timer
+		HAL_TIM_Base_Stop(&htim2);
+		HAL_TIM_Base_Stop(&htim6);
+		HAL_TIM_Base_Stop(&htim7);
+
+		// Update Prescaler
+		htim2.Instance->PSC = prescaler;
+		htim6.Instance->PSC = prescaler;
+		htim7.Instance->PSC = prescaler;
+
+		// Restart Timer
+		HAL_TIM_Base_Start(&htim2);
+		HAL_TIM_Base_Start(&htim6);
+		HAL_TIM_Base_Start(&htim7);
+	}
+
+
 	/* Mapping function */
 	 int myMap(int x, int in_min, int in_max, int out_min, int out_max){
 		 return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -827,6 +854,7 @@ static void MX_GPIO_Init(void)
 				 // LEDs go back to normal when not in State B
 				 ledOneFlag = 1;
 				 ledTwoFlag = 1;
+				 ledThreeFlag = 1;
 
 				 stateHandlerA();
 				 break;
@@ -837,6 +865,9 @@ static void MX_GPIO_Init(void)
 				 // Debug message
 				 //sprintf(msg, "Executing B.\n\r");
 				 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+				 // LED3 always on
+				 ledThreeFlag = 1;
 
 				 stateHandlerB();
 				 break;
@@ -851,6 +882,7 @@ static void MX_GPIO_Init(void)
 				 // LEDs go back to normal when not in State B
 				 ledOneFlag = 1;
 				 ledTwoFlag = 1;
+				 ledThreeFlag = 1;
 
 				 stateHandlerC();
 				 break;
@@ -946,10 +978,9 @@ static void MX_GPIO_Init(void)
 		 int servoAngle = myMap(getAdcFromPot(), 60, 4095, 0, 180);
 		 motorControl(servoAngle);
 
-		 // LED3 control
-		 // servoAngle also mapped to LED3 frequency (PSC)
-		 // adc towards 0v = 5hz
-		 // adc towards 5v = 1hz
+		 // LED frequency control
+		 int blinkSpeed = myMap(getAdcFromPot(), 60, 4095, 16000, 0.244140625);
+		 ledFreqControl(blinkSpeed);
 
 		 // LED1 and LED2 toggle
 		 // B1 pressed = Turn off
@@ -982,11 +1013,19 @@ static void MX_GPIO_Init(void)
 		 // Turn off LCD
 		 I2C_LCD_NoDisplay(MyI2C_LCD);
 
+		 // Turn off LED1, LED2, LED3
+		 ledOneFlag = 0;
+		 ledTwoFlag = 0;
+		 ledThreeFlag = 0;
+		 HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_RESET);
+		 HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, GPIO_PIN_RESET);
+		 HAL_GPIO_WritePin(LED_3_GPIO_Port, LED_3_Pin, GPIO_PIN_RESET);
+
 		 // Debug Message
 		 sprintf(msg, "State C.\n\r");
 		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-		 // Turn off UART
+		 // Turn off UART transmissions
 		 HAL_UART_DeInit(&huart2);
 
 		 // Configure GPIO pin : PA2 (UART TX) to GPIO
@@ -1041,7 +1080,9 @@ static void MX_GPIO_Init(void)
 
 		 // TIM7 controls LED3
 		 } else if(htim->Instance == TIM7){
-			 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
+			 if (ledThreeFlag == 1){
+				 HAL_GPIO_TogglePin(LED_3_GPIO_Port, LED_3_Pin);
+			 }
 
 	     // TIM14 controls UART
 		 } else if(htim->Instance == TIM14){
