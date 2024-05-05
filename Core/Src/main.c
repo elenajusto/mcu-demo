@@ -853,10 +853,6 @@ static void MX_GPIO_Init(void)
 				 ledTwoFlag = 1;
 				 ledThreeFlag = 1;
 
-				 // Timers go back to normal
-				 HAL_TIM_Base_Stop(&htim7);
-				 MX_TIM7_Init();
-
 				 stateHandlerA();
 				 break;
 
@@ -885,10 +881,6 @@ static void MX_GPIO_Init(void)
 				 ledTwoFlag = 1;
 				 ledThreeFlag = 1;
 
-				 // Timers go back to normal
-				 HAL_TIM_Base_Stop(&htim7);
-				 MX_TIM7_Init();
-
 				 stateHandlerC();
 				 break;
 		 }
@@ -906,6 +898,10 @@ static void MX_GPIO_Init(void)
 
 			 // Clear LCD
 			 I2C_LCD_Clear(MyI2C_LCD);
+
+			 // Timers go back to normal
+			 HAL_TIM_Base_Stop(&htim7);
+			 MX_TIM7_Init();
 
 			 // Go to State B
 			 stateTracker = 2;
@@ -929,6 +925,7 @@ static void MX_GPIO_Init(void)
 			 // Debug message
 			 sprintf(msg, "Going to State C.\n\r");
 			 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
 
 			 // Go to State C
 			 stateTracker = 3;
