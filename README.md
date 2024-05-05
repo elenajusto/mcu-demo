@@ -1,6 +1,6 @@
 # MCU Demo Project
 
-<h2>System Architecture - Draft 4</h2>
+<h2>System Architecture</h2>
 !https://github.com/elenajusto/mcu-demo/assets/56148816/1fddd222-4324-4d9a-aca1-8a54df36742b
 
 <h2>State Machine</h2>
