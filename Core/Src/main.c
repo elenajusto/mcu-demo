@@ -844,10 +844,6 @@ static void MX_GPIO_Init(void)
 		 	 // State A
 			 case 1:
 
-				 // Debug message
-				 //sprintf(msg, "Executing A.\n\r");
-				 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
 				 // LEDs go back to normal when not in State B
 				 ledOneFlag = 1;
 				 ledTwoFlag = 1;
@@ -858,10 +854,6 @@ static void MX_GPIO_Init(void)
 
 			 // State B
 			 case 2:
-
-				 // Debug message
-				 //sprintf(msg, "Executing B.\n\r");
-				 //HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 				 // LED3 always on
 				 ledThreeFlag = 1;
@@ -886,7 +878,7 @@ static void MX_GPIO_Init(void)
 		 }
 	 }
 
-	 /* State Machine Controller */
+	 /* State Machine Decider */
 	 // Description: Monitors button pushes to update current state value.
 	 void stateMachineDecider(){
 		 // Go to State B if it is State A
