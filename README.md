@@ -16,7 +16,7 @@
 
 
 ## State Machine
-![MCU-Group-Demo-Architecture 3 - State Control drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/d61f0281-5b5e-4bea-a0ad-a9491203f06c)
+![MCU-Group-Demo-States drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/d1acd5dd-626f-4297-950c-436fec44f812)
 
 
 ## Wiring Schematic
