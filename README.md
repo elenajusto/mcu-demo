@@ -12,7 +12,7 @@
 
 
 ## State Handler Module
-![MCU-Group-Demo-Architecture 3 - State Control drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/5fc9f275-39f9-40e6-b652-33c052003c1c)
+![MCU-Group-Demo-Architecture 3 - State Control drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/60157b44-879b-406e-8bfb-65f5e9b5a469)
 
 
 ## State Machine
