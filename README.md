@@ -3,6 +3,18 @@
 ## System Architecture
 ![System Architecture](https://github.com/elenajusto/mcu-demo/assets/56148816/1fddd222-4324-4d9a-aca1-8a54df36742b)
 
+## Hardware Test Module
+![MCU-Group-Demo-Architecture 1 1 - System Test drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/1a05f054-4240-46b2-9830-200a9daf4a60)
+
+
+## Interrupts Module
+![MCU-Group-Demo-Architecture 2 - Interrupts drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/b1164895-aaf9-4693-ab4e-276bf1ca6cc7)
+
+
+## State Handler Module
+![MCU-Group-Demo-Architecture 3 - State Control drawio](https://github.com/elenajusto/mcu-demo/assets/56148816/939c1d07-c847-4896-be4f-789f7a386033)
+
+
 ## State Machine
 ![State Machine](https://github.com/elenajusto/mcu-demo/assets/56148816/bc7a7bfa-aca1-4d64-8d06-8d94e2c41ea1)
 
