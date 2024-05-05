@@ -68,8 +68,7 @@ int ledTwoFlag = 1;			// 1 = On
 int buttonTwoFlag = 1;		// 1 = On
 int stateTracker;			// 1 = A, 2 = B, 3 = C
 
-uint16_t millisProgStart;	// Stores milliseconds since program started
-uint16_t millisValue;		// Stores milliseconds
+uint16_t millisProgStart;	// Stores milliseconds
 
 /* USER CODE END PV */
 
@@ -86,6 +85,9 @@ static void MX_TIM7_Init(void);
 static void MX_TIM14_Init(void);
 static void MX_TIM17_Init(void);
 /* USER CODE BEGIN PFP */
+
+// My own GPIO config function
+void turnUartIntoGPIO(void);
 
 // Test functions
 void hardwareTestLED(void);												// Test LEDs wiring
@@ -163,8 +165,8 @@ int main(void)
   // Enable the TIM14 peripheral
    __HAL_RCC_TIM14_CLK_ENABLE();
 
-   // Enable the TIM17 peripheral
-    __HAL_RCC_TIM17_CLK_ENABLE();
+  // Enable the TIM17 peripheral
+  __HAL_RCC_TIM17_CLK_ENABLE();
 
   // Enable the peripheral IRQ for TIM2
   HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
@@ -191,7 +193,6 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim6);
   HAL_TIM_Base_Start_IT(&htim7);
   HAL_TIM_Base_Start_IT(&htim14);
-  HAL_TIM_Base_Start_IT(&htim17);
 
   // Enable PWM on TIM3 (for motor control)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
@@ -985,29 +986,51 @@ static void MX_GPIO_Init(void)
 		 sprintf(msg, "State C.\n\r");
 		 HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-		 // Test function to show State C. State C functionality yet to be added.
-		 HAL_Delay(3000);
-
 		 // Turn off UART
-		 //HAL_UART_DeInit(&huart2);
+		 HAL_UART_DeInit(&huart2);
 
 		 // Configure GPIO pin : PA2 (UART TX) to GPIO
-		 //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET); // Configure GPIO pin Output Level
-		 //GPIO_InitStruct.Pin = GPIO_PIN_2;
-		 //GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-		 //GPIO_InitStruct.Pull = GPIO_NOPULL;
-		 //GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-		 //HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+		 turnUartIntoGPIO();
 
-		 // Set pin to toggle output based on TIM with frequency 1 Hz (turn on TIM)
+		 // Counter
+		 //int millisTimer = 0;
 
-		 // Cycle for 3 seconds
+		 // Start millis timer
+		 //HAL_TIM_Base_Start_IT(&htim17);
+
+		 // Set pin to toggle output based on TIM with frequency 1 Hz for 3 seconds
+		 for (int i = 0; i < 6; i++){
+			 HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
+			 //millisTimer = millisProgStart;
+			 HAL_Delay(500);	// 500 ms = 1 Hz
+		 }
+
+		 // Turn off millis timer
+		 //HAL_TIM_Base_Stop(&htim17);
+
+		 // De-init GPIO PA2
+		 HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2);
 
 		 // Turn back into UART (Tx)
-		 //MX_USART2_UART_Init();
+		 MX_USART2_UART_Init();
 
 		 // Return to State A
 		 stateTracker = 1;
+	 }
+
+	 /* turn UART into GPIO */
+	 void turnUartIntoGPIO(void){
+		 GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+		 __HAL_RCC_GPIOA_CLK_ENABLE();
+
+		 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET); // Configure GPIO pin Output Level
+
+		 GPIO_InitStruct.Pin = GPIO_PIN_2;
+		 GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		 GPIO_InitStruct.Pull = GPIO_NOPULL;
+		 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+		 HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 	 }
 
 	 /* Controller Function for LED1, LED2 and LED3*/
